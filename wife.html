@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I miss my Wife</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --muscari-blue: #5f81c7;
+      --muscari-light: #a4bdf4;
+      --muscari-dark: #3d5ca4;
+      --background: #f0f4ff;
+      --text: #1c2c4c;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: var(--muscari-dark);
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0 1.5rem;
+      text-align: center;
+    }
+
+    .progress-container {
+      width: 90%;
+      max-width: 500px;
+      background-color: #d9e4ff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(63, 94, 171, 0.2);
+    }
+
+    .progress-bar {
+      height: 32px;
+      background: linear-gradient(90deg, var(--muscari-blue), var(--muscari-light));
+      width: 0%;
+      text-align: center;
+      line-height: 32px;
+      color: white;
+      font-weight: bold;
+      transition: width 0.5s ease;
+    }
+
+    .percentage, .countdown, .next-percent {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: var(--muscari-dark);
+    }
+
+    .countdown, .next-percent {
+      font-family: 'Courier New', monospace;
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .hearts {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 500px;
+      word-wrap: break-word;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .hearts:hover {
+      transform: scale(1.1);
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts-display" onclick="activateDebugMode()">💙</div>
+  <h1>Days to Survive</h1>
+  <p>Time apart from my love, like a muscari slowly blooming 🌸</p>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+  </div>
+
+  <div class="percentage" id="percentage-text">Calculating...</div>
+  <div class="countdown" id="countdown-text">Loading countdown...</div>
+  <div class="next-percent" id="next-percent-text">Calculating next %...</div>
+
+  <div class="footer">Inspired by muscari – the flower of enduring love.</div>
+
+  <script>
+    let leftTime = new Date('2025-06-26T12:30:00');
+    let returnTime = new Date('2025-08-06T08:00:00');
+    let debugMode = false;
+
+    // Debug mode: Click hearts to set countdown to 5 seconds before end
+    function activateDebugMode() {
+      debugMode = true;
+      const now = new Date();
+      returnTime = new Date(now.getTime() + 5000); // 5 seconds from now
+      console.log('Debug mode activated: 5 seconds until finale!');
+    }
+
+    function pad(num, length) {
+      return String(num).padStart(length, '0');
+    }
+
+    function formatTime(ms) {
+      const total = Math.max(0, ms);
+      const days = Math.floor(total / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((total / (1000 * 60)) % 60);
+      const seconds = Math.floor((total / 1000) % 60);
+      const milliseconds = Math.floor(total % 1000);
+
+      return `${pad(days, 2)}d ${pad(hours, 2)}h ${pad(minutes, 2)}m ${pad(seconds, 2)}s ${pad(milliseconds, 3)}ms`;
+    }
+
+    function updateHearts(percent) {
+      const heartsDisplay = document.getElementById('hearts-display');
+      const totalHearts = 14;
+      const heartsToShow = Math.floor((percent / 100) * totalHearts);
+      const heartsString = '💙'.repeat(heartsToShow);
+      heartsDisplay.textContent = heartsString || '💙'; // Always show at least one heart
+    }
+
+    function updateProgress() {
+      const now = new Date();
+      const totalTime = returnTime - leftTime;
+      const elapsedTime = now - leftTime;
+      const remainingTime = returnTime - now;
+
+      let percent = (elapsedTime / totalTime) * 100;
+      percent = Math.min(Math.max(percent, 0), 100);
+
+      const bar = document.getElementById('progress-bar');
+      const percentText = document.getElementById('percentage-text');
+      const countdownText = document.getElementById('countdown-text');
+      const nextPercentText = document.getElementById('next-percent-text');
+
+      // Update progress bar
+      bar.style.width = percent.toFixed(2) + '%';
+      bar.textContent = percent.toFixed(2) + '%';
+      
+      // Update percentage text (flipped to show remaining)
+      const remainingPercent = 100 - percent;
+      percentText.textContent = `${remainingPercent.toFixed(2)}% to go until she's back!`;
+
+      // Update hearts display
+      updateHearts(percent);
+
+      // Update time remaining with line break
+      if (remainingTime > 0) {
+        countdownText.innerHTML = `⏳ Time remaining:<br>${formatTime(remainingTime)}`;
+      } else {
+        countdownText.innerHTML = `🎉 She's back! Welcome home! 🎉`;
+      }
+
+      // Time until next full percent with line break
+      const nextPercentTarget = Math.ceil(percent);
+      if (nextPercentTarget <= 100 && remainingTime > 0) {
+        const targetTime = new Date(leftTime.getTime() + (nextPercentTarget / 100) * totalTime);
+        const msUntilNext = targetTime - now;
+        nextPercentText.innerHTML = `💫 Will reach ${nextPercentTarget}% in:<br>${formatTime(msUntilNext)}`;
+      } else {
+        nextPercentText.innerHTML = `🎉 100% reached! She's back! 🎉`;
+      }
+
+      requestAnimationFrame(updateProgress);
+    }
+    
+    updateProgress();
+  </script>
+</body>
+</html>
