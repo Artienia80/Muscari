@@ -108,10 +108,19 @@
       50% { transform: scale(1.1); }
     }
 
-    .flight-tracker {
+    .flight-tracker-container {
       margin-top: 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flight-tracker {
       width: 95%;
       max-width: 1000px;
+      display: flex;
+      justify-content: center;
     }
 
     .flight-path {
@@ -120,6 +129,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
+      min-width: 600px;
     }
 
     .city {
@@ -128,6 +139,8 @@
       align-items: center;
       z-index: 10;
       position: relative;
+      flex: 1;
+      max-width: 180px;
     }
 
     .city-code {
@@ -157,8 +170,8 @@
     .flight-line {
       position: absolute;
       top: 82px;
-      left: 15%;
-      right: 15%;
+      left: 90px;
+      right: 90px;
       height: 4px;
       background: linear-gradient(90deg, var(--muscari-light), var(--muscari-blue), var(--muscari-light));
       border-radius: 3px;
@@ -183,10 +196,99 @@
       
       .main-countdown {
         font-size: 2.5rem;
+        padding: 0 1rem;
       }
 
       .main-countdown.celebration {
         font-size: 2rem;
+        padding: 0 1rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.8);
+        transform-origin: center;
+        margin-top: 0.5rem;
+      }
+
+      .flight-path {
+        min-width: 500px;
+      }
+
+      .flight-line {
+        left: 75px;
+        right: 75px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-countdown {
+        font-size: 2rem;
+        padding: 0 0.5rem;
+      }
+
+      .main-countdown.celebration {
+        font-size: 1.5rem;
+        padding: 0 0.5rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.65);
+        transform-origin: center;
+        margin-top: 0rem;
+      }
+
+      .flight-path {
+        min-width: 450px;
+      }
+
+      .flight-line {
+        left: 65px;
+        right: 65px;
+      }
+
+      .city-code {
+        font-size: 1.5rem;
+      }
+
+      .city-name {
+        font-size: 1rem;
+      }
+
+      .city-countdown {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+        min-width: 100px;
+      }
+
+      .plane {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .main-countdown {
+        font-size: 1.5rem;
+        padding: 0 0.25rem;
+      }
+
+      .main-countdown.celebration {
+        font-size: 1.2rem;
+        padding: 0 0.25rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.5);
+        transform-origin: center;
+        margin-top: -0.5rem;
+      }
+
+      .flight-path {
+        min-width: 400px;
+      }
+
+      .flight-line {
+        left: 60px;
+        right: 60px;
       }
     }
   </style>
@@ -203,28 +305,30 @@
   <div class="main-countdown" id="main-countdown">00:00:00:00:00</div>
 
   <!-- Flight Tracker -->
-  <div class="flight-tracker">
-    <div class="flight-path">
-      <div class="city" id="sha-city">
-        <div class="city-code">SHA</div>
-        <div class="city-name">Shanghai</div>
-        <div class="city-countdown" id="sha-countdown">--:--:--</div>
+  <div class="flight-tracker-container">
+    <div class="flight-tracker">
+      <div class="flight-path">
+        <div class="city" id="sha-city">
+          <div class="city-code">SHA</div>
+          <div class="city-name">Shanghai</div>
+          <div class="city-countdown" id="sha-countdown">--:--:--</div>
+        </div>
+        
+        <div class="city" id="ckg-city">
+          <div class="city-code">CKG</div>
+          <div class="city-name">Chongqing</div>
+          <div class="city-countdown" id="ckg-countdown">--:--:--</div>
+        </div>
+        
+        <div class="city" id="bud-city">
+          <div class="city-code">BUD</div>
+          <div class="city-name">Budapest</div>
+          <div class="city-countdown" id="bud-countdown">--:--:--</div>
+        </div>
+        
+        <div class="flight-line"></div>
+        <div class="plane" id="plane">✈︎</div>
       </div>
-      
-      <div class="city" id="ckg-city">
-        <div class="city-code">CKG</div>
-        <div class="city-name">Chongqing</div>
-        <div class="city-countdown" id="ckg-countdown">--:--:--</div>
-      </div>
-      
-      <div class="city" id="bud-city">
-        <div class="city-code">BUD</div>
-        <div class="city-name">Budapest</div>
-        <div class="city-countdown" id="bud-countdown">--:--:--</div>
-      </div>
-      
-      <div class="flight-line"></div>
-      <div class="plane" id="plane">✈︎</div>
     </div>
   </div>
 
@@ -454,26 +558,38 @@
         budCountdown.textContent = "WIFE IS BACK";
       }
 
-      // Update plane position
-      let planeLeft = 15; // Start at SHA (left side)
+      // Update plane position - calculate based on flight line boundaries
+      const flightLine = document.querySelector('.flight-line');
+      const flightPath = document.querySelector('.flight-path');
+      
+      // Get the actual boundaries of the flight line
+      const lineRect = flightLine.getBoundingClientRect();
+      const pathRect = flightPath.getBoundingClientRect();
+      
+      // Calculate the percentage positions relative to the flight path
+      const lineStartPercent = ((lineRect.left - pathRect.left) / pathRect.width) * 100;
+      const lineEndPercent = ((lineRect.right - pathRect.left) / pathRect.width) * 100;
+      const lineSpan = lineEndPercent - lineStartPercent;
+      
+      let planePosition = lineStartPercent; // Start at beginning of line
       
       if (now >= flightTimes.shaDepart && now < flightTimes.ckgArrive) {
         // Flight from SHA to CKG
         const flightProgress = (now - flightTimes.shaDepart) / (flightTimes.ckgArrive - flightTimes.shaDepart);
-        planeLeft = 15 + (flightProgress * 35); // Move from 15% to 50%
+        planePosition = lineStartPercent + (flightProgress * lineSpan * 0.5); // First half of line
       } else if (now >= flightTimes.ckgArrive && now < flightTimes.ckgDepart) {
         // Stopped at CKG
-        planeLeft = 50;
+        planePosition = lineStartPercent + (lineSpan * 0.5); // Middle of line
       } else if (now >= flightTimes.ckgDepart && now < flightTimes.budArrive) {
         // Flight from CKG to BUD
         const flightProgress = (now - flightTimes.ckgDepart) / (flightTimes.budArrive - flightTimes.ckgDepart);
-        planeLeft = 50 + (flightProgress * 35); // Move from 50% to 85%
+        planePosition = lineStartPercent + (lineSpan * 0.5) + (flightProgress * lineSpan * 0.5); // Second half of line
       } else if (now >= flightTimes.budArrive) {
         // Arrived at BUD
-        planeLeft = 85;
+        planePosition = lineEndPercent; // End of line
       }
 
-      plane.style.left = planeLeft + '%';
+      plane.style.left = planePosition + '%';
     }
 
     function updateProgress() {
