@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I miss my Wife</title>
+  <link rel="icon" href="image.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --muscari-blue: #5f81c7;
+      --muscari-light: #a4bdf4;
+      --muscari-dark: #3d5ca4;
+      --background: #f0f4ff;
+      --text: #1c2c4c;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: var(--muscari-dark);
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0 1rem;
+      text-align: center;
+    }
+
+    .progress-container {
+      width: 95%;
+      max-width: 1000px;
+      background-color: #d9e4ff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(63, 94, 171, 0.2);
+      position: relative;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .progress-bar {
+      height: 48px;
+      background: linear-gradient(90deg, var(--muscari-blue), var(--muscari-light));
+      width: 0%;
+      text-align: center;
+      line-height: 48px;
+      color: white;
+      font-weight: bold;
+      transition: width 0.5s ease;
+      font-size: 1.2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hearts {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 800px;
+      word-wrap: break-word;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .hearts:hover {
+      transform: scale(1.1);
+    }
+
+    .main-countdown {
+      font-size: 4rem;
+      font-family: 'Courier New', monospace;
+      color: var(--muscari-dark);
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+      letter-spacing: 0.1em;
+      transition: all 0.5s ease;
+    }
+
+    .main-countdown.celebration {
+      font-size: 3rem;
+      color: var(--muscari-dark);
+      font-family: 'Quicksand', sans-serif;
+      animation: celebrate 2s ease-in-out infinite;
+    }
+
+    @keyframes celebrate {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .flight-tracker-container {
+      margin-top: 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flight-tracker {
+      width: 95%;
+      max-width: 1000px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .flight-path {
+      position: relative;
+      height: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      min-width: 600px;
+    }
+
+    .city {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      position: relative;
+      flex: 1;
+      max-width: 180px;
+    }
+
+    .city-code {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--muscari-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .city-name {
+      font-size: 1.3rem;
+      color: #666;
+      margin-bottom: 0.8rem;
+    }
+
+    .city-countdown {
+      font-size: 1.2rem;
+      font-family: 'Courier New', monospace;
+      color: var(--muscari-blue);
+      background: var(--background);
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .flight-line {
+      position: absolute;
+      top: 82px;
+      left: 90px;
+      right: 90px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--muscari-light), var(--muscari-blue), var(--muscari-light));
+      border-radius: 3px;
+      z-index: 1;
+    }
+
+    .plane {
+      position: absolute;
+      top: 49px;
+      font-size: 3rem;
+      transform: translateX(-50%);
+      transition: left 0.5s ease-out;
+      z-index: 100;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+    }
+
+    @media (max-width: 768px) {
+      .hearts {
+        font-size: 2rem;
+        white-space: normal;
+      }
+      
+      .main-countdown {
+        font-size: 2.5rem;
+        padding: 0 1rem;
+      }
+
+      .main-countdown.celebration {
+        font-size: 2rem;
+        padding: 0 1rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.8);
+        transform-origin: center;
+        margin-top: 0.5rem;
+      }
+
+      .flight-path {
+        min-width: 500px;
+      }
+
+      .flight-line {
+        left: 75px;
+        right: 75px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-countdown {
+        font-size: 2rem;
+        padding: 0 0.5rem;
+      }
+
+      .main-countdown.celebration {
+        font-size: 1.5rem;
+        padding: 0 0.5rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.65);
+        transform-origin: center;
+        margin-top: 0rem;
+      }
+
+      .flight-path {
+        min-width: 450px;
+      }
+
+      .flight-line {
+        left: 65px;
+        right: 65px;
+      }
+
+      .city-code {
+        font-size: 1.5rem;
+      }
+
+      .city-name {
+        font-size: 1rem;
+      }
+
+      .city-countdown {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+        min-width: 100px;
+      }
+
+      .plane {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .main-countdown {
+        font-size: 1.5rem;
+        padding: 0 0.25rem;
+      }
+
+      .main-countdown.celebration {
+        font-size: 1.2rem;
+        padding: 0 0.25rem;
+      }
+
+      .flight-tracker-container {
+        transform: scale(0.5);
+        transform-origin: center;
+        margin-top: -0.5rem;
+      }
+
+      .flight-path {
+        min-width: 400px;
+      }
+
+      .flight-line {
+        left: 60px;
+        right: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts-display" onclick="activateDebugMode()">💙</div>
+  <h1>Days to Survive</h1>
+  <p>Time until my wife is back</p>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+  </div>
+
+  <div class="main-countdown" id="main-countdown">00:00:00:00:00</div>
+
+  <!-- Flight Tracker -->
+  <div class="flight-tracker-container">
+    <div class="flight-tracker">
+      <div class="flight-path">
+        <div class="city" id="sha-city">
+          <div class="city-code">SHA</div>
+          <div class="city-name">Shanghai</div>
+          <div class="city-countdown" id="sha-countdown">--:--:--</div>
+        </div>
+        
+        <div class="city" id="ckg-city">
+          <div class="city-code">CKG</div>
+          <div class="city-name">Chongqing</div>
+          <div class="city-countdown" id="ckg-countdown">--:--:--</div>
+        </div>
+        
+        <div class="city" id="bud-city">
+          <div class="city-code">BUD</div>
+          <div class="city-name">Budapest</div>
+          <div class="city-countdown" id="bud-countdown">--:--:--</div>
+        </div>
+        
+        <div class="flight-line"></div>
+        <div class="plane" id="plane">✈︎</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let leftTime = new Date('2025-06-26T12:30:00');
+    let returnTime = new Date('2025-08-06T08:00:00');
+    let debugMode = false;
+    let timeOffset = 0; // Offset in milliseconds for debug mode
+    let isDragging = false;
+    let celebrationShown = false;
+    
+    // Arrow key navigation variables
+    let keyHoldStart = 0;
+    let keyHoldTimer = null;
+    let isKeyHeld = false;
+
+    // Flight times in Budapest time (Chinese time - 6 hours)
+    const flightTimes = {
+      shaDepart: new Date('2025-08-05T16:10:00'), // 22:10 Shanghai = 16:10 Budapest
+      ckgArrive: new Date('2025-08-05T18:40:00'), // 00:40+1 Chongqing = 18:40 Budapest (same day)
+      ckgDepart: new Date('2025-08-05T20:45:00'), // 02:45 Chongqing = 20:45 Budapest (same day)
+      budArrive: new Date('2025-08-06T08:00:00')  // 08:00 Budapest
+    };
+
+    // Get current time (with debug offset)
+    function getCurrentTime() {
+      return new Date(Date.now() + timeOffset);
+    }
+
+    // Progress bar drag functionality
+    function initProgressBarDrag() {
+      const progressContainer = document.querySelector('.progress-container');
+      
+      function handleDrag(e) {
+        if (!isDragging) return;
+        
+        const rect = progressContainer.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        
+        // Calculate what time this percentage represents
+        const totalTime = returnTime - leftTime;
+        const targetElapsedTime = (percent / 100) * totalTime;
+        const targetTime = new Date(leftTime.getTime() + targetElapsedTime);
+        
+        // Set time offset to make current time equal target time
+        timeOffset = targetTime.getTime() - Date.now();
+        
+        // Update debug mode
+        debugMode = true;
+        
+        // Reset celebration flag when dragging
+        celebrationShown = false;
+        
+        e.preventDefault();
+      }
+      
+      progressContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        handleDrag(e);
+      });
+      
+      progressContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        handleDrag(e);
+      });
+      
+      document.addEventListener('mousemove', handleDrag);
+      document.addEventListener('touchmove', handleDrag);
+      
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+      
+      document.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    }
+    
+    // Arrow key time navigation
+    function initArrowKeyNavigation() {
+      let activeKeys = new Set();
+      
+      function calculateTimeStep(holdDuration) {
+        const baseStep = 10 * 60 * 1000; // 10 minutes in ms
+        const accelerationFactor = Math.pow(holdDuration / 1000, 1.5); // Exponential acceleration
+        return Math.max(baseStep, baseStep * accelerationFactor);
+      }
+      
+      function moveTime(direction, holdDuration) {
+        const timeStep = calculateTimeStep(holdDuration);
+        const adjustment = direction === 'forward' ? timeStep : -timeStep;
+        timeOffset += adjustment;
+        debugMode = true;
+        
+        // Reset celebration flag when navigating
+        celebrationShown = false;
+      }
+      
+      function handleKeyPress() {
+        if (activeKeys.has('ArrowLeft') || activeKeys.has('ArrowRight')) {
+          const holdDuration = Date.now() - keyHoldStart;
+          const direction = activeKeys.has('ArrowRight') ? 'forward' : 'backward';
+          moveTime(direction, holdDuration);
+          
+          // Continue moving while key is held
+          keyHoldTimer = setTimeout(handleKeyPress, 50); // Update every 50ms
+        }
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          
+          if (!activeKeys.has(e.key)) {
+            activeKeys.add(e.key);
+            keyHoldStart = Date.now();
+            
+            // Initial movement
+            const direction = e.key === 'ArrowRight' ? 'forward' : 'backward';
+            moveTime(direction, 0);
+            
+            // Start continuous movement
+            keyHoldTimer = setTimeout(handleKeyPress, 100);
+          }
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          activeKeys.delete(e.key);
+          
+          if (activeKeys.size === 0) {
+            clearTimeout(keyHoldTimer);
+            keyHoldTimer = null;
+          }
+        }
+      });
+      
+      // Handle window blur to stop key navigation
+      window.addEventListener('blur', () => {
+        activeKeys.clear();
+        clearTimeout(keyHoldTimer);
+        keyHoldTimer = null;
+      });
+    }
+    
+    // Debug mode: Click hearts to set countdown to 5 seconds before end
+    function activateDebugMode() {
+      const now = getCurrentTime();
+      timeOffset = (returnTime.getTime() - 5000) - Date.now(); // 5 seconds before end
+      debugMode = true;
+      celebrationShown = false;
+      
+      console.log('Debug mode activated: 5 seconds until finale!');
+    }
+
+    function pad(num, length) {
+      return String(num).padStart(length, '0');
+    }
+
+    function formatMainCountdown(ms) {
+      const total = Math.max(0, ms);
+      const days = Math.floor(total / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((total / (1000 * 60)) % 60);
+      const seconds = Math.floor((total / 1000) % 60);
+      const milliseconds = Math.floor((total % 1000) / 10); // Convert to 2 digits
+
+      return `${pad(days, 2)}:${pad(hours, 2)}:${pad(minutes, 2)}:${pad(seconds, 2)}:${pad(milliseconds, 2)}`;
+    }
+
+    function formatShortTime(ms) {
+      const total = Math.max(0, ms);
+      const hours = Math.floor(total / (1000 * 60 * 60));
+      const minutes = Math.floor((total / (1000 * 60)) % 60);
+      const seconds = Math.floor((total / 1000) % 60);
+
+      if (hours > 0) {
+        return `${pad(hours, 2)}:${pad(minutes, 2)}:${pad(seconds, 2)}`;
+      } else {
+        return `${pad(minutes, 2)}:${pad(seconds, 2)}`;
+      }
+    }
+
+    function updateHearts(percent) {
+      const heartsDisplay = document.getElementById('hearts-display');
+      const totalHearts = 14;
+      const heartsToShow = Math.floor((percent / 100) * totalHearts);
+      const heartsString = '💙'.repeat(heartsToShow);
+      heartsDisplay.textContent = heartsString || '💙'; // Always show at least one heart
+    }
+
+    function updateFlightTracker() {
+      const now = getCurrentTime();
+      const plane = document.getElementById('plane');
+      const shaCountdown = document.getElementById('sha-countdown');
+      const ckgCountdown = document.getElementById('ckg-countdown');
+      const budCountdown = document.getElementById('bud-countdown');
+
+      // Update countdowns
+      const timeToShaDepart = flightTimes.shaDepart - now;
+      const timeToCkgArrive = flightTimes.ckgArrive - now;
+      const timeToCkgDepart = flightTimes.ckgDepart - now;
+      const timeToBudArrive = flightTimes.budArrive - now;
+
+      // SHA countdown (until departure)
+      if (timeToShaDepart > 0) {
+        shaCountdown.textContent = formatShortTime(timeToShaDepart);
+      } else {
+        shaCountdown.textContent = "DEPARTED";
+      }
+
+      // CKG countdown (until arrival, then until departure)
+      if (timeToCkgArrive > 0) {
+        ckgCountdown.textContent = formatShortTime(timeToCkgArrive);
+      } else if (timeToCkgDepart > 0) {
+        ckgCountdown.textContent = formatShortTime(timeToCkgDepart);
+      } else {
+        ckgCountdown.textContent = "DEPARTED";
+      }
+
+      // BUD countdown (until arrival)
+      if (timeToBudArrive > 0) {
+        budCountdown.textContent = formatShortTime(timeToBudArrive);
+      } else {
+        budCountdown.textContent = "WIFE IS BACK";
+      }
+
+      // Update plane position - calculate based on flight line boundaries
+      const flightLine = document.querySelector('.flight-line');
+      const flightPath = document.querySelector('.flight-path');
+      
+      // Get the actual boundaries of the flight line
+      const lineRect = flightLine.getBoundingClientRect();
+      const pathRect = flightPath.getBoundingClientRect();
+      
+      // Calculate the percentage positions relative to the flight path
+      const lineStartPercent = ((lineRect.left - pathRect.left) / pathRect.width) * 100;
+      const lineEndPercent = ((lineRect.right - pathRect.left) / pathRect.width) * 100;
+      const lineSpan = lineEndPercent - lineStartPercent;
+      
+      let planePosition = lineStartPercent; // Start at beginning of line
+      
+      if (now >= flightTimes.shaDepart && now < flightTimes.ckgArrive) {
+        // Flight from SHA to CKG
+        const flightProgress = (now - flightTimes.shaDepart) / (flightTimes.ckgArrive - flightTimes.shaDepart);
+        planePosition = lineStartPercent + (flightProgress * lineSpan * 0.5); // First half of line
+      } else if (now >= flightTimes.ckgArrive && now < flightTimes.ckgDepart) {
+        // Stopped at CKG
+        planePosition = lineStartPercent + (lineSpan * 0.5); // Middle of line
+      } else if (now >= flightTimes.ckgDepart && now < flightTimes.budArrive) {
+        // Flight from CKG to BUD
+        const flightProgress = (now - flightTimes.ckgDepart) / (flightTimes.budArrive - flightTimes.ckgDepart);
+        planePosition = lineStartPercent + (lineSpan * 0.5) + (flightProgress * lineSpan * 0.5); // Second half of line
+      } else if (now >= flightTimes.budArrive) {
+        // Arrived at BUD
+        planePosition = lineEndPercent; // End of line
+      }
+
+      plane.style.left = planePosition + '%';
+    }
+
+    function updateProgress() {
+      const now = getCurrentTime();
+      const totalTime = returnTime - leftTime;
+      const elapsedTime = now - leftTime;
+      const remainingTime = returnTime - now;
+
+      let percent = (elapsedTime / totalTime) * 100;
+      percent = Math.min(Math.max(percent, 0), 100);
+
+      const bar = document.getElementById('progress-bar');
+      const mainCountdown = document.getElementById('main-countdown');
+
+      // Update progress bar with 6 decimal places displayed on the bar
+      bar.style.width = percent.toFixed(6) + '%';
+      bar.textContent = percent.toFixed(6) + '%';
+
+      // Update main countdown with special message when time is up
+      if (remainingTime <= 0 && !celebrationShown) {
+        mainCountdown.textContent = "My Wife I Finally Found You!";
+        mainCountdown.classList.add('celebration');
+        celebrationShown = true;
+      } else if (remainingTime > 0) {
+        mainCountdown.textContent = formatMainCountdown(remainingTime);
+        mainCountdown.classList.remove('celebration');
+      }
+
+      // Update hearts display
+      updateHearts(percent);
+
+      // Update flight tracker
+      updateFlightTracker();
+
+      requestAnimationFrame(updateProgress);
+    }
+    
+    // Initialize drag and arrow key functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      initProgressBarDrag();
+      initArrowKeyNavigation();
+    });
+    
+    updateProgress();
+  </script>
+</body>
+</html>
