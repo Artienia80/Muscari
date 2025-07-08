@@ -333,8 +333,8 @@
   </div>
 
   <script>
-    let leftTime = new Date('2025-06-26T12:30:00');
-    let returnTime = new Date('2025-08-06T08:00:00');
+    let leftTime = new Date('2025-06-26T18:30:00'); // 12:30 Budapest = 18:30 Shanghai
+    let returnTime = new Date('2025-08-06T14:00:00'); // 08:00 Budapest = 14:00 Shanghai
     let debugMode = false;
     let timeOffset = 0; // Offset in milliseconds for debug mode
     let isDragging = false;
@@ -345,12 +345,12 @@
     let keyHoldTimer = null;
     let isKeyHeld = false;
 
-    // Flight times in Budapest time (Chinese time - 6 hours)
+    // Flight times in Shanghai time (all times converted from Budapest + 6 hours)
     const flightTimes = {
-      shaDepart: new Date('2025-08-05T16:10:00'), // 22:10 Shanghai = 16:10 Budapest
-      ckgArrive: new Date('2025-08-05T18:40:00'), // 00:40+1 Chongqing = 18:40 Budapest (same day)
-      ckgDepart: new Date('2025-08-05T20:45:00'), // 02:45 Chongqing = 20:45 Budapest (same day)
-      budArrive: new Date('2025-08-06T08:00:00')  // 08:00 Budapest
+      shaDepart: new Date('2025-08-05T22:10:00'), // 16:10 Budapest = 22:10 Shanghai
+      ckgArrive: new Date('2025-08-06T00:40:00'), // 18:40 Budapest = 00:40 Shanghai (next day)
+      ckgDepart: new Date('2025-08-06T02:45:00'), // 20:45 Budapest = 02:45 Shanghai (next day)
+      budArrive: new Date('2025-08-06T14:00:00')  // 08:00 Budapest = 14:00 Shanghai
     };
 
     // Get current time (with debug offset)
