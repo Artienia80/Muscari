@@ -296,13 +296,20 @@
         console.log("✈️ Creating flight route...");
         const mainRoute = createRoute(cities.budapest, cities.gothenburg, '#e74c3c', 4);
 
-        // Create road path from Budapest to Vienna
+        // Create road path from Budapest to Vienna (following A4/E60 highway)
         console.log("🚗 Creating road route...");
         const roadPath = [
             [47.4979, 19.0402], // Budapest
+            [47.5636, 19.0947], // Budapest outskirts (M1 highway start)
+            [47.6249, 18.9108], // Tatabánya area
             [47.6892, 18.8572], // Győr
-            [47.8456, 17.6073], // Bratislava area
-            [48.0196, 16.9077], // Hainburg
+            [47.7272, 18.6444], // Győr outskirts
+            [47.8169, 18.3258], // Mosonmagyaróvár area
+            [47.8456, 17.6073], // Near Bratislava (crossing Danube)
+            [48.0099, 17.1257], // Bratislava center
+            [48.0889, 16.8233], // Bratislava outskirts (A4 continues)
+            [48.1433, 16.7042], // Hainburg an der Donau
+            [48.1801, 16.5749], // Bruck an der Leitha
             [48.2082, 16.3738]  // Vienna
         ];
 
@@ -310,8 +317,7 @@
             color: '#3498db',
             weight: 4,
             opacity: 0.8,
-            smoothFactor: 1,
-            dashArray: '10, 5'
+            smoothFactor: 1
         }).addTo(map);
 
         // Add road route info
