@@ -145,6 +145,19 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
 
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #333;
+            z-index: 1001;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -175,21 +188,25 @@
 
     <div class="map-container">
         <div id="map"></div>
+        <div class="loading-indicator" id="loading" style="display: none;">
+            Loading route data...
+        </div>
         <div class="controls">
             <h3>📍 Travel Routes</h3>
             <div class="route-info">
                 <strong>✈️ Budapest</strong> ↔ <strong>Gothenburg</strong><br>
                 <small>1,234 km • Flight Route</small>
             </div>
-            <div class="route-info">
-                <strong>🚗 Budapest</strong> → <strong>Vienna</strong><br>
-                <small>243 km • Road Route</small>
+            <div class="route-info" id="kmz-route-info">
+                <strong>🚗 KMZ Route</strong> (Loading...)<br>
+                <small>From Google Maps Export</small>
             </div>
             <button class="add-route-btn" onclick="addRandomRoute()">+ Add Random Route</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
         console.log("🚀 Script started");
 
@@ -216,7 +233,8 @@
         const cities = {
             budapest: { lat: 47.4979, lng: 19.0402, name: "Budapest", country: "Hungary" },
             gothenburg: { lat: 57.7089, lng: 11.9746, name: "Gothenburg", country: "Sweden" },
-            vienna: { lat: 48.2082, lng: 16.3738, name: "Vienna", country: "Austria" }
+            vienna: { lat: 48.2082, lng: 16.3738, name: "Vienna", country: "Austria" },
+            jonkoping: { lat: 57.7826, lng: 14.1618, name: "Jönköping", country: "Sweden" }
         };
 
         // Additional cities for random routes (won't have markers unless connected)
@@ -292,50 +310,145 @@
             return polyline;
         }
 
+        // Function to parse KML coordinates
+        function parseKMLCoordinates(coordString) {
+            const coords = coordString.trim().split(/\s+/);
+            const latlngs = [];
+            
+            for (let coord of coords) {
+                const parts = coord.split(',');
+                if (parts.length >= 2) {
+                    const lng = parseFloat(parts[0]);
+                    const lat = parseFloat(parts[1]);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        latlngs.push([lat, lng]);
+                    }
+                }
+            }
+            
+            return latlngs;
+        }
+
+        // Function to load and parse KMZ file
+        async function loadKMZRoute() {
+            console.log("📦 Loading KMZ file...");
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch('JKPG-BUD.kmz');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                console.log("✅ KMZ file loaded, extracting...");
+                
+                const zip = new JSZip();
+                const contents = await zip.loadAsync(arrayBuffer);
+                
+                // Look for KML file (usually doc.kml)
+                let kmlFile = null;
+                for (let filename in contents.files) {
+                    if (filename.endsWith('.kml')) {
+                        kmlFile = contents.files[filename];
+                        break;
+                    }
+                }
+                
+                if (!kmlFile) {
+                    throw new Error('No KML file found in KMZ archive');
+                }
+                
+                const kmlContent = await kmlFile.async('text');
+                console.log("✅ KML content extracted");
+                
+                // Parse KML
+                const parser = new DOMParser();
+                const kmlDoc = parser.parseFromString(kmlContent, 'text/xml');
+                
+                // Find LineString coordinates
+                const lineStrings = kmlDoc.getElementsByTagName('LineString');
+                let routeCoords = [];
+                
+                for (let lineString of lineStrings) {
+                    const coordinates = lineString.getElementsByTagName('coordinates')[0];
+                    if (coordinates) {
+                        const coordText = coordinates.textContent;
+                        const coords = parseKMLCoordinates(coordText);
+                        routeCoords = routeCoords.concat(coords);
+                    }
+                }
+                
+                if (routeCoords.length > 0) {
+                    console.log(`✅ Parsed ${routeCoords.length} route points`);
+                    
+                    // Create the route polyline
+                    const kmzRoute = L.polyline(routeCoords, {
+                        color: '#3498db',
+                        weight: 4,
+                        opacity: 0.8,
+                        smoothFactor: 1
+                    }).addTo(map);
+                    
+                    // Calculate distance
+                    const totalDistance = calculatePolylineDistance(routeCoords);
+                    
+                    // Update route info
+                    const routeInfo = document.getElementById('kmz-route-info');
+                    routeInfo.innerHTML = `
+                        <strong>🚗 Jönköping → Budapest</strong><br>
+                        <small>~${totalDistance} km • Google Maps Route</small>
+                    `;
+                    
+                    // Add click event to show route info
+                    kmzRoute.on('click', function(e) {
+                        console.log("🚗 KMZ route clicked");
+                        L.popup()
+                            .setLatLng(e.latlng)
+                            .setContent(`
+                                <div style="text-align: center;">
+                                    <strong>🚗 Jönköping → Budapest</strong><br>
+                                    <small>Route Distance: ~${totalDistance} km</small><br>
+                                    <small>From Google Maps Export</small>
+                                </div>
+                            `)
+                            .openOn(map);
+                    });
+                    
+                    // Fit map to show the route
+                    map.fitBounds(kmzRoute.getBounds(), { padding: [20, 20] });
+                    
+                } else {
+                    throw new Error('No route coordinates found in KML');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading KMZ route:', error);
+                const routeInfo = document.getElementById('kmz-route-info');
+                routeInfo.innerHTML = `
+                    <strong>🚗 KMZ Route</strong> (Error)<br>
+                    <small>Could not load JKPG-BUD.kmz</small>
+                `;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Function to calculate distance along a polyline
+        function calculatePolylineDistance(coords) {
+            let totalDistance = 0;
+            for (let i = 1; i < coords.length; i++) {
+                const point1 = { lat: coords[i-1][0], lng: coords[i-1][1] };
+                const point2 = { lat: coords[i][0], lng: coords[i][1] };
+                totalDistance += calculateDistance(point1, point2);
+            }
+            return Math.round(totalDistance);
+        }
+
         // Create the main route: Budapest to Gothenburg (straight line - flight)
         console.log("✈️ Creating flight route...");
         const mainRoute = createRoute(cities.budapest, cities.gothenburg, '#e74c3c', 4);
-
-        // Create road path from Budapest to Vienna (following A4/E60 highway)
-        console.log("🚗 Creating road route...");
-        const roadPath = [
-            [47.4979, 19.0402], // Budapest
-            [47.5636, 19.0947], // Budapest outskirts (M1 highway start)
-            [47.6249, 18.9108], // Tatabánya area
-            [47.6892, 18.8572], // Győr
-            [47.7272, 18.6444], // Győr outskirts
-            [47.8169, 18.3258], // Mosonmagyaróvár area
-            [47.8456, 17.6073], // Near Bratislava (crossing Danube)
-            [48.0099, 17.1257], // Bratislava center
-            [48.0889, 16.8233], // Bratislava outskirts (A4 continues)
-            [48.1433, 16.7042], // Hainburg an der Donau
-            [48.1801, 16.5749], // Bruck an der Leitha
-            [48.2082, 16.3738]  // Vienna
-        ];
-
-        const roadRoute = L.polyline(roadPath, {
-            color: '#3498db',
-            weight: 4,
-            opacity: 0.8,
-            smoothFactor: 1
-        }).addTo(map);
-
-        // Add road route info
-        roadRoute.on('click', function() {
-            console.log("🚗 Road route clicked");
-            const distance = calculateDistance(cities.budapest, cities.vienna);
-            L.popup()
-                .setLatLng([(cities.budapest.lat + cities.vienna.lat) / 2, 
-                           (cities.budapest.lng + cities.vienna.lng) / 2])
-                .setContent(`
-                    <div style="text-align: center;">
-                        <strong>🚗 Budapest → Vienna</strong><br>
-                        <small>Road Distance: ~${distance} km</small><br>
-                        <small>Drive Time: ~2.5 hours</small>
-                    </div>
-                `)
-                .openOn(map);
-        });
 
         // Add click event to show route info
         mainRoute.on('click', function() {
@@ -421,6 +534,11 @@
         // Add click event to map for debugging
         map.on('click', function(e) {
             console.log(`🖱️ Map clicked at: ${e.latlng.lat}, ${e.latlng.lng}`);
+        });
+
+        // Load KMZ route when page loads
+        window.addEventListener('load', () => {
+            loadKMZRoute();
         });
 
         console.log("🎉 Script completed successfully!");
