@@ -178,8 +178,12 @@
         <div class="controls">
             <h3>📍 Travel Routes</h3>
             <div class="route-info">
-                <strong>Budapest</strong> ↔ <strong>Gothenburg</strong><br>
-                <small>1,234 km • Northern Europe Route</small>
+                <strong>✈️ Budapest</strong> ↔ <strong>Gothenburg</strong><br>
+                <small>1,234 km • Flight Route</small>
+            </div>
+            <div class="route-info">
+                <strong>🚗 Budapest</strong> → <strong>Vienna</strong><br>
+                <small>243 km • Road Route</small>
             </div>
             <button class="add-route-btn" onclick="addRandomRoute()">+ Add Random Route</button>
         </div>
@@ -187,36 +191,50 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
+        console.log("🚀 Script started");
+
         // Initialize the map
+        console.log("📍 Initializing map...");
         const map = L.map('map', {
             center: [54.5, 15.0], // Centered between Budapest and Gothenburg
             zoom: 4,
             zoomControl: true,
             scrollWheelZoom: true
         });
+        console.log("✅ Map initialized");
 
         // Add tile layer with a beautiful map style
+        console.log("🗺️ Adding tile layer...");
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
             maxZoom: 18
         }).addTo(map);
+        console.log("✅ Tile layer added");
 
-        // City data with coordinates
+        // City data with coordinates (only cities with routes)
+        console.log("🏙️ Setting up city data...");
         const cities = {
             budapest: { lat: 47.4979, lng: 19.0402, name: "Budapest", country: "Hungary" },
             gothenburg: { lat: 57.7089, lng: 11.9746, name: "Gothenburg", country: "Sweden" },
+            vienna: { lat: 48.2082, lng: 16.3738, name: "Vienna", country: "Austria" }
+        };
+
+        // Additional cities for random routes (won't have markers unless connected)
+        const additionalCities = {
             paris: { lat: 48.8566, lng: 2.3522, name: "Paris", country: "France" },
             london: { lat: 51.5074, lng: -0.1278, name: "London", country: "United Kingdom" },
             rome: { lat: 41.9028, lng: 12.4964, name: "Rome", country: "Italy" },
             madrid: { lat: 40.4168, lng: -3.7038, name: "Madrid", country: "Spain" },
             berlin: { lat: 52.5200, lng: 13.4050, name: "Berlin", country: "Germany" },
             amsterdam: { lat: 52.3676, lng: 4.9041, name: "Amsterdam", country: "Netherlands" },
-            prague: { lat: 50.0755, lng: 14.4378, name: "Prague", country: "Czech Republic" },
-            vienna: { lat: 48.2082, lng: 16.3738, name: "Vienna", country: "Austria" }
+            prague: { lat: 50.0755, lng: 14.4378, name: "Prague", country: "Czech Republic" }
         };
+        console.log("✅ City data configured");
 
         // Create custom pin icon
+        console.log("📌 Creating custom marker function...");
         function createCustomMarker(city) {
+            console.log(`Creating marker for ${city.name}`);
             const marker = L.marker([city.lat, city.lng], {
                 icon: L.divIcon({
                     html: '📍',
@@ -236,14 +254,18 @@
             return marker;
         }
 
-        // Create markers for cities
+        // Create markers for cities (only those with routes)
+        console.log("🏗️ Creating initial markers...");
         const markers = {};
         Object.keys(cities).forEach(key => {
             markers[key] = createCustomMarker(cities[key]);
         });
+        console.log("✅ Initial markers created");
 
         // Create route line between two cities
+        console.log("🛣️ Creating route function...");
         function createRoute(city1, city2, color = '#e74c3c', weight = 3) {
+            console.log(`Creating route from ${city1.name} to ${city2.name}`);
             const latlngs = [
                 [city1.lat, city1.lng],
                 [city2.lat, city2.lng]
@@ -270,25 +292,64 @@
             return polyline;
         }
 
-        // Create the main route: Budapest to Gothenburg
+        // Create the main route: Budapest to Gothenburg (straight line - flight)
+        console.log("✈️ Creating flight route...");
         const mainRoute = createRoute(cities.budapest, cities.gothenburg, '#e74c3c', 4);
+
+        // Create road path from Budapest to Vienna
+        console.log("🚗 Creating road route...");
+        const roadPath = [
+            [47.4979, 19.0402], // Budapest
+            [47.6892, 18.8572], // Győr
+            [47.8456, 17.6073], // Bratislava area
+            [48.0196, 16.9077], // Hainburg
+            [48.2082, 16.3738]  // Vienna
+        ];
+
+        const roadRoute = L.polyline(roadPath, {
+            color: '#3498db',
+            weight: 4,
+            opacity: 0.8,
+            smoothFactor: 1,
+            dashArray: '10, 5'
+        }).addTo(map);
+
+        // Add road route info
+        roadRoute.on('click', function() {
+            console.log("🚗 Road route clicked");
+            const distance = calculateDistance(cities.budapest, cities.vienna);
+            L.popup()
+                .setLatLng([(cities.budapest.lat + cities.vienna.lat) / 2, 
+                           (cities.budapest.lng + cities.vienna.lng) / 2])
+                .setContent(`
+                    <div style="text-align: center;">
+                        <strong>🚗 Budapest → Vienna</strong><br>
+                        <small>Road Distance: ~${distance} km</small><br>
+                        <small>Drive Time: ~2.5 hours</small>
+                    </div>
+                `)
+                .openOn(map);
+        });
 
         // Add click event to show route info
         mainRoute.on('click', function() {
+            console.log("✈️ Flight route clicked");
             const distance = calculateDistance(cities.budapest, cities.gothenburg);
             L.popup()
                 .setLatLng([(cities.budapest.lat + cities.gothenburg.lat) / 2, 
                            (cities.budapest.lng + cities.gothenburg.lng) / 2])
                 .setContent(`
                     <div style="text-align: center;">
-                        <strong>Budapest ↔ Gothenburg</strong><br>
-                        <small>Distance: ~${distance} km</small>
+                        <strong>✈️ Budapest ↔ Gothenburg</strong><br>
+                        <small>Flight Distance: ~${distance} km</small><br>
+                        <small>Flight Time: ~2 hours</small>
                     </div>
                 `)
                 .openOn(map);
         });
 
         // Calculate distance between two cities (Haversine formula)
+        console.log("📏 Distance calculation function ready");
         function calculateDistance(city1, city2) {
             const R = 6371; // Earth's radius in km
             const dLat = (city2.lat - city1.lat) * Math.PI / 180;
@@ -304,8 +365,11 @@
         let additionalRoutes = [];
 
         // Function to add random routes
+        console.log("🎲 Random route function ready");
         function addRandomRoute() {
-            const cityKeys = Object.keys(cities);
+            console.log("🎲 Adding random route...");
+            const allCities = {...cities, ...additionalCities};
+            const cityKeys = Object.keys(allCities);
             const city1Key = cityKeys[Math.floor(Math.random() * cityKeys.length)];
             let city2Key = cityKeys[Math.floor(Math.random() * cityKeys.length)];
             
@@ -314,38 +378,46 @@
                 city2Key = cityKeys[Math.floor(Math.random() * cityKeys.length)];
             }
 
+            console.log(`Random route: ${city1Key} to ${city2Key}`);
+
             const colors = ['#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22'];
             const color = colors[Math.floor(Math.random() * colors.length)];
 
-            const route = createRoute(cities[city1Key], cities[city2Key], color, 3);
+            // Create markers for cities that don't have them yet
+            if (!markers[city1Key]) {
+                console.log(`Creating new marker for ${city1Key}`);
+                markers[city1Key] = createCustomMarker(allCities[city1Key]);
+            }
+            if (!markers[city2Key]) {
+                console.log(`Creating new marker for ${city2Key}`);
+                markers[city2Key] = createCustomMarker(allCities[city2Key]);
+            }
+
+            const route = createRoute(allCities[city1Key], allCities[city2Key], color, 3);
             additionalRoutes.push(route);
 
             // Update controls
-            const distance = calculateDistance(cities[city1Key], cities[city2Key]);
+            const distance = calculateDistance(allCities[city1Key], allCities[city2Key]);
             const routeInfo = document.createElement('div');
             routeInfo.className = 'route-info';
             routeInfo.innerHTML = `
-                <strong>${cities[city1Key].name}</strong> ↔ <strong>${cities[city2Key].name}</strong><br>
+                <strong>${allCities[city1Key].name}</strong> ↔ <strong>${allCities[city2Key].name}</strong><br>
                 <small>${distance} km • <span style="color: ${color}">●</span> Route ${additionalRoutes.length}</small>
             `;
             
             const controls = document.querySelector('.controls');
             const button = controls.querySelector('.add-route-btn');
             controls.insertBefore(routeInfo, button);
+
+            console.log(`✅ Random route added: ${allCities[city1Key].name} to ${allCities[city2Key].name}`);
         }
 
-        // Add some initial animation
-        setTimeout(() => {
-            map.flyTo([54.5, 15.0], 5, {
-                animate: true,
-                duration: 2
-            });
-        }, 1000);
-
-        // Add click event to map for adding custom routes
+        // Add click event to map for debugging
         map.on('click', function(e) {
-            console.log(`Clicked at: ${e.latlng.lat}, ${e.latlng.lng}`);
+            console.log(`🖱️ Map clicked at: ${e.latlng.lat}, ${e.latlng.lng}`);
         });
+
+        console.log("🎉 Script completed successfully!");
     </script>
 </body>
 </html>
