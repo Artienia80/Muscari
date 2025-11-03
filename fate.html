@@ -6,7 +6,7 @@
     <link rel="icon" href="image.png" type="image/png">
     <title>Clock of Fate - Life in 24 hours</title>
     <style>
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -39,6 +39,22 @@
             opacity: 0.9;
         }
 
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+        }
+
         .clock-container {
             background: rgba(30, 58, 138, 0.4);
             backdrop-filter: blur(10px);
@@ -49,6 +65,13 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
+        @media (max-width: 768px) {
+            .clock-container {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
         .analog-clock {
             width: 200px;
             height: 200px;
@@ -57,6 +80,15 @@
             border: 8px solid rgba(147, 51, 234, 0.6);
             border-radius: 50%;
             background: rgba(30, 58, 138, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .analog-clock {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 20px;
+                border: 6px solid rgba(147, 51, 234, 0.6);
+            }
         }
 
         .clock-center {
@@ -114,6 +146,19 @@
             letter-spacing: 0.05em;
         }
 
+        @media (max-width: 768px) {
+            .clock {
+                font-size: 1.5em;
+                letter-spacing: 0.02em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .clock {
+                font-size: 1.2em;
+            }
+        }
+
         .milliseconds {
             text-align: center;
             font-size: 1.5em;
@@ -130,10 +175,23 @@
             margin-bottom: 20px;
         }
 
+        @media (max-width: 768px) {
+            .second-countdown {
+                font-size: 0.85em;
+                margin-bottom: 15px;
+            }
+        }
+
         .clock-info {
             text-align: center;
             font-size: 1.1em;
             opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .clock-info {
+                font-size: 0.9em;
+            }
         }
 
         .progress-bar {
@@ -172,10 +230,23 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
+        @media (max-width: 768px) {
+            .timeline {
+                padding: 20px;
+            }
+        }
+
         .timeline-title {
             font-size: 2em;
             margin-bottom: 30px;
             text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-title {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
         }
 
         .event {
@@ -183,6 +254,13 @@
             padding: 20px 0 20px 60px;
             border-left: 3px solid rgba(147, 51, 234, 0.4);
             margin-left: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .event {
+                padding: 15px 0 15px 40px;
+                margin-left: 20px;
+            }
         }
 
         .event:last-child {
@@ -200,11 +278,27 @@
             border: 4px solid #7c3aed;
         }
 
+        @media (max-width: 768px) {
+            .event-marker {
+                left: -10px;
+                top: 15px;
+                width: 16px;
+                height: 16px;
+                border: 3px solid #7c3aed;
+            }
+        }
+
         .event-time {
             font-size: 1.3em;
             font-weight: bold;
             margin-bottom: 5px;
             color: #e9d5ff;
+        }
+
+        @media (max-width: 768px) {
+            .event-time {
+                font-size: 1.1em;
+            }
         }
 
         .event-date {
@@ -213,10 +307,22 @@
             margin-bottom: 8px;
         }
 
+        @media (max-width: 768px) {
+            .event-date {
+                font-size: 0.85em;
+            }
+        }
+
         .event-title {
             font-size: 1.2em;
             font-weight: 600;
             margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .event-title {
+                font-size: 1em;
+            }
         }
 
         .milestone {
@@ -244,10 +350,23 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
+        @media (max-width: 768px) {
+            .durations {
+                padding: 20px;
+            }
+        }
+
         .durations-title {
             font-size: 1.8em;
             margin-bottom: 25px;
             text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .durations-title {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
         }
 
         .duration-item {
@@ -257,6 +376,13 @@
             margin-bottom: 15px;
         }
 
+        @media (max-width: 768px) {
+            .duration-item {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+        }
+
         .duration-name {
             font-size: 1.2em;
             font-weight: 600;
@@ -264,14 +390,32 @@
             color: #ffd700;
         }
 
+        @media (max-width: 768px) {
+            .duration-name {
+                font-size: 1.1em;
+            }
+        }
+
         .duration-time {
             font-size: 1.1em;
             margin-bottom: 5px;
         }
 
+        @media (max-width: 768px) {
+            .duration-time {
+                font-size: 1em;
+            }
+        }
+
         .duration-real {
             font-size: 0.9em;
             opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .duration-real {
+                font-size: 0.85em;
+            }
         }
 
         @media (max-width: 1024px) {
@@ -318,23 +462,9 @@
 
                 <div class="event">
                     <div class="event-marker"></div>
-                    <div class="event-time" id="eventJan25">00:00:00</div>
-                    <div class="event-date">January 25, 2025</div>
-                    <div class="event-title">First Hangout (Espresso House)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
                     <div class="event-time" id="eventFeb1">00:00:00</div>
                     <div class="event-date">February 1, 2025</div>
-                    <div class="event-title">Second Hangout (Beach) & Asking Out</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventFeb11">00:00:00</div>
-                    <div class="event-date">February 11, 2025</div>
-                    <div class="event-title">Third Hangout (Sanna)</div>
+                    <div class="event-title">Asking Out</div>
                 </div>
 
                 <div class="event milestone">
@@ -346,23 +476,9 @@
 
                 <div class="event">
                     <div class="event-marker"></div>
-                    <div class="event-time" id="eventFeb19">00:00:00</div>
-                    <div class="event-date">February 19, 2025</div>
-                    <div class="event-title">Second Date</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventFeb21">00:00:00</div>
-                    <div class="event-date">February 21, 2025</div>
-                    <div class="event-title">Third Date</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
                     <div class="event-time" id="eventMar1">00:00:00</div>
                     <div class="event-date">March 1, 2025</div>
-                    <div class="event-title">Fourth Date & First Unseiso Experience</div>
+                    <div class="event-title">First Unseiso Experience</div>
                 </div>
 
                 <div class="event milestone">
@@ -391,13 +507,6 @@
                     <div class="event-time" id="eventApr9">00:00:00</div>
                     <div class="event-date">April 9, 2025</div>
                     <div class="event-title">Back from Budapest (I)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventApr22">00:00:00</div>
-                    <div class="event-date">April 22, 2025</div>
-                    <div class="event-title">Second Unseiso Experience</div>
                 </div>
 
                 <div class="event">
@@ -482,34 +591,6 @@
                     <div class="event-time" id="currentTime">00:00:24</div>
                     <div class="event-date" id="currentDate">November 3, 2025</div>
                     <div class="event-title">Right Now</div>
-                </div>
-
-                <div class="event milestone">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventNov14">00:00:00</div>
-                    <div class="event-date">November 14, 2025</div>
-                    <div class="event-title">Arti's Birthday</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventDec5">00:00:00</div>
-                    <div class="event-date">December 5, 2025</div>
-                    <div class="event-title">End of Turkey LDR (II), Trip to Gothenburg</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventDec8">00:00:00</div>
-                    <div class="event-date">December 8, 2025</div>
-                    <div class="event-title">End of Gothenburg, Start of Turkey LDR (III)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventJan1">00:00:00</div>
-                    <div class="event-date">January 1, 2026</div>
-                    <div class="event-title">New Year's</div>
                 </div>
             </div>
 
