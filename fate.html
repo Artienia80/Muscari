@@ -673,23 +673,24 @@
     </div>
 
     <script>
-        const startDate = new Date('2025-01-22T00:00:00');
+        const startDate = new Date(2025, 0, 22, 0, 0, 0); // Year, Month(0-indexed), Day, Hour, Min, Sec
         const endDate = new Date('2085-01-22T00:00:00');
         const totalLifeMs = endDate - startDate;
         
         // Convert a date to fate time from start
         function dateToFateTime(dateStr) {
-            const date = new Date(dateStr + 'T12:00:00');
-            const elapsedMs = date - startDate;
-            const progressFraction = elapsedMs / totalLifeMs;
-            const totalSeconds = progressFraction * 24 * 60 * 60;
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = Math.floor(totalSeconds % 60);
-            return String(hours).padStart(2, '0') + ':' +
-                   String(minutes).padStart(2, '0') + ':' +
-                   String(seconds).padStart(2, '0');
-        }
+    const parts = dateStr.split('-');
+    const date = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]), 12, 0, 0);
+    const elapsedMs = date - startDate;
+    const progressFraction = elapsedMs / totalLifeMs;
+    const totalSeconds = progressFraction * 24 * 60 * 60;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    return String(hours).padStart(2, '0') + ':' +
+           String(minutes).padStart(2, '0') + ':' +
+           String(seconds).padStart(2, '0');
+}
         
         // Calculate real durations in days
         function daysBetween(date1Str, date2Str) {
