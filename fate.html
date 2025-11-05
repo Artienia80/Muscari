@@ -1,192 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="image.png" type="image/png">
-    <link rel="stylesheet" href="fate.css">
-    <title>Clock of Fate - Life in 24 hours</title>
-    <style>
-        /* Highlight milestones in light blue */
-        .event.milestone {
-            background: rgba(126, 203, 255, 0.2);
-            border-left: 4px solid #7ecbff;
-            box-shadow: 0 0 12px rgba(126, 203, 255, 0.5);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="image.png" type="image/png" />
+  <link rel="stylesheet" href="fate.css" />
+  <title>Clock of Fate - Life in 24 hours</title>
+  <style>
+    /* Highlight milestones in light blue */
+    .event.milestone {
+      background: rgba(126, 203, 255, 0.2);
+      border-left: 4px solid #7ecbff;
+      box-shadow: 0 0 12px rgba(126, 203, 255, 0.5);
+    }
+    /* Right Now pulse effect */
+    .event.current {
+      border-left: 4px solid #fff;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Clock of Fate</h1>
-        <p class="subtitle">Our life in 24 hours</p>
-        
-        <div class="clock-container">
-            <div class="analog-clock" id="analogClock">
-                <div class="hand hour-hand" id="hourHand"></div>
-                <div class="hand minute-hand" id="minuteHand"></div>
-                <div class="hand second-hand" id="secondHand"></div>
-                <div class="clock-center"></div>
-            </div>
-            
-            <div class="clock" id="fateTime">00:00:00.000000</div>
-            <div class="second-countdown" id="secondCountdown">Time until next second: 0µs</div>
-            <div class="clock-info">
-                <div id="realDate"></div>
-                <div id="dayProgress"></div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar">0%</div>
-            </div>
-        </div>
+  <div class="container">
+    <h1>Clock of Fate</h1>
+    <p class="subtitle">Our life in 24 hours</p>
 
-        <div class="content-wrapper">
-            <div class="timeline">
-                <h2 class="timeline-title">Our Relationship</h2>
-                <div id="eventsContainer"></div>
-            </div>
+    <div class="clock-container">
+      <div class="analog-clock" id="analogClock">
+        <div class="hand hour-hand" id="hourHand"></div>
+        <div class="hand minute-hand" id="minuteHand"></div>
+        <div class="hand second-hand" id="secondHand"></div>
+        <div class="clock-center"></div>
+      </div>
 
-            <div class="durations">
-                <h2 class="durations-title">Event Durations</h2>
-                <div id="durationsContainer"></div>
-            </div>
-        </div>
+      <div class="clock" id="fateTime">00:00:00.000000</div>
+      <div class="second-countdown" id="secondCountdown">
+        Time until next second: 0µs
+      </div>
+      <div class="clock-info">
+        <div id="realDate"></div>
+        <div id="dayProgress"></div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressBar">0%</div>
+      </div>
     </div>
 
-    <script>
-        // Start and end of life day (Swedish time)
-        const startDate = new Date('2025-01-22T17:30:00+01:00');
-        const endDate = new Date('2085-01-22T17:30:00+01:00');
-        const totalLifeMs = endDate - startDate;
+    <div class="content-wrapper">
+      <div class="timeline">
+        <h2 class="timeline-title">Our Relationship</h2>
+        <div id="eventsContainer"></div>
+      </div>
 
-        // Convert date to fate time
-        function dateToFateTime(dateStr) {
-            const date = new Date(dateStr);
-            const elapsedMs = date - startDate;
-            const progressFraction = elapsedMs / totalLifeMs;
-            const totalSeconds = progressFraction * 24 * 60 * 60;
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = Math.floor(totalSeconds % 60);
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
+      <div class="durations">
+        <h2 class="durations-title">Event Durations</h2>
+        <div id="durationsContainer"></div>
+      </div>
+    </div>
+  </div>
 
-        function daysBetween(d1, d2) {
-            return Math.round((new Date(d2) - new Date(d1)) / (1000 * 60 * 60 * 24));
-        }
-
-        function daysToFateTime(days) {
-            const fateSeconds = days * 2.955884544;
-            const minutes = Math.floor(fateSeconds / 60);
-            const seconds = fateSeconds % 60;
-            if (minutes > 0) {
-                return `${minutes}m ${seconds.toFixed(2)}s`;
-            }
-            return `${seconds.toFixed(2)}s`;
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const elapsedMs = now - startDate;
-            const progressFraction = elapsedMs / totalLifeMs;
-
-            const totalSeconds = progressFraction * 24 * 60 * 60;
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = Math.floor(totalSeconds % 60);
-            const microseconds = Math.floor((totalSeconds % 1) * 1_000_000);
-
-            const timeString = `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(microseconds).padStart(6,'0')}`;
-
-            document.getElementById('fateTime').textContent = timeString;
-            document.getElementById('secondCountdown').textContent = `Time until one second: ${1_000_000 - microseconds}µs`;
-
-            const hourAngle = (hours % 24) * 15 + (minutes / 60) * 15;
-            const minuteAngle = minutes * 6 + (seconds / 60) * 6;
-            const secondAngle = seconds * 6 + (microseconds / 1_000_000) * 6;
-
-            document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
-            document.getElementById('minuteHand').style.transform = `rotate(${minuteAngle}deg)`;
-            document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
-
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            document.getElementById('realDate').textContent = 'Real Time: ' + now.toLocaleDateString('en-US', options);
-
-            const percentage = (progressFraction * 100).toFixed(8);
-            document.getElementById('dayProgress').textContent = `${percentage}% of our lifetime day has passed`;
-            document.getElementById('progressBar').style.width = percentage + '%';
-            document.getElementById('progressBar').textContent = percentage.substring(0, 7) + '%';
-        }
-
-        async function loadEvents() {
-            try {
-                const response = await fetch('fateevents.js');
-                const text = await response.text();
-                eval(text);
-
-                // --- Insert dynamic Right Now event ---
-                window.fateEvents = window.fateEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-                const nowSweden = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Stockholm" }));
-                window.fateEvents = window.fateEvents.filter(e => !e.current);
-
-                let insertIndex = window.fateEvents.findIndex(e => new Date(e.date) > nowSweden);
-                if (insertIndex === -1) insertIndex = window.fateEvents.length;
-
-                window.fateEvents.splice(insertIndex, 0, {
-                    title: "Right Now",
-                    dateDisplay: nowSweden.toLocaleDateString("en-GB", {
-                        day: "numeric", month: "long", year: "numeric"
-                    }),
-                    milestone: true,
-                    current: true
-                });
-
-                // --- Render events ---
-                const eventsContainer = document.getElementById('eventsContainer');
-                eventsContainer.innerHTML = window.fateEvents.map(event => {
-                    const fateTime = event.date ? dateToFateTime(event.date) : "—";
-                    const classNames = event.milestone ? 'event milestone' :
-                        event.current ? 'event current' : 'event';
-                    return `
-                        <div class="${classNames}">
-                            <div class="event-marker"></div>
-                            <div class="event-time" ${event.current ? 'id="currentTime"' : ''}>${fateTime}</div>
-                            <div class="event-date" ${event.current ? 'id="currentDate"' : ''}>${event.dateDisplay}</div>
-                            <div class="event-title">${event.title}</div>
-                        </div>
-                    `;
-                }).join('');
-
-                // --- Render durations ---
-                const durationsContainer = document.getElementById('durationsContainer');
-                durationsContainer.innerHTML = window.fateDurations.map(duration => {
-                    let durationText, realText;
-                    if (duration.ongoing) {
-                        const now = new Date();
-                        const start = new Date(duration.start + 'T12:00:00+01:00');
-                        const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-                        durationText = daysToFateTime(days);
-                        realText = `${duration.displayStart} - Present (${days} days)`;
-                    } else {
-                        const days = daysBetween(duration.start, duration.end);
-                        durationText = daysToFateTime(days);
-                        realText = `${duration.displayStart} - ${duration.displayEnd} (${days} days)`;
-                    }
-                    return `
-                        <div class="duration-item">
-                            <div class="duration-name">${duration.name}</div>
-                            <div class="duration-time">${durationText}</div>
-                            <div class="duration-real">${realText}</div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (err) {
-                console.error('Error loading events:', err);
-            }
-        }
-
-        updateClock();
-        setInterval(updateClock, 10);
-        loadEvents();
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
