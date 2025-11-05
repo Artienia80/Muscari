@@ -1,243 +1,206 @@
 // Events Timeline Data
 window.fateEvents = [
     {
-        date: '2025-01-22',
+        date: '2025-01-22T17:30:00+01:00',
         dateDisplay: 'January 22, 2025',
         title: 'First Meeting',
         milestone: false,
         current: false
     },
     {
-        date: '2025-02-01',
-        dateDisplay: 'February 1, 2025',
-        title: 'Asking Out',
+        date: '2025-01-25T12:00:00+01:00',
+        dateDisplay: 'January 25, 2025',
+        title: 'First Hangout (Espresso House)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-02-14',
+        date: '2025-02-01T12:00:00+01:00',
+        dateDisplay: 'February 1, 2025',
+        title: 'Second Hangout (Beach) & Asking Out',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-02-11T12:00:00+01:00',
+        dateDisplay: 'February 11, 2025',
+        title: 'Third Hangout (Sanna)',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-02-14T12:00:00+01:00',
         dateDisplay: 'February 14, 2025',
         title: 'First Date',
         milestone: true,
         current: false
     },
     {
-        date: '2025-03-01',
-        dateDisplay: 'March 1, 2025',
-        title: 'First Unseiso Experience',
+        date: '2025-02-19T12:00:00+01:00',
+        dateDisplay: 'February 19, 2025',
+        title: 'Second Date',
         milestone: false,
         current: false
     },
     {
-        date: '2025-03-14',
+        date: '2025-02-21T12:00:00+01:00',
+        dateDisplay: 'February 21, 2025',
+        title: 'Third Date',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-03-01T12:00:00+01:00',
+        dateDisplay: 'March 1, 2025',
+        title: 'Fourth Date & First Unseiso Experience',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-03-14T12:00:00+01:00',
         dateDisplay: 'March 14, 2025',
         title: 'Official Relationship',
         milestone: true,
         current: false
     },
     {
-        date: '2025-03-22',
+        date: '2025-03-22T12:00:00+01:00',
         dateDisplay: 'March 22, 2025',
         title: 'Redo Day / Move In Together',
         milestone: false,
         current: false
     },
     {
-        date: '2025-04-01',
+        date: '2025-04-01T12:00:00+02:00',
         dateDisplay: 'April 1, 2025',
         title: 'Trip to Budapest (I)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-04-09',
+        date: '2025-04-09T12:00:00+02:00',
         dateDisplay: 'April 9, 2025',
         title: 'Back from Budapest (I)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-06-05',
+        date: '2025-04-22T12:00:00+02:00',
+        dateDisplay: 'April 22, 2025',
+        title: 'Second Unseiso Experience',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-06-05T12:00:00+02:00',
         dateDisplay: 'June 5, 2025',
         title: 'End of Fabriken Move-In',
         milestone: false,
         current: false
     },
     {
-        date: '2025-06-17',
+        date: '2025-06-17T12:00:00+02:00',
         dateDisplay: 'June 17, 2025',
         title: 'Trip to Budapest (II)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-06-23',
+        date: '2025-06-23T12:00:00+02:00',
         dateDisplay: 'June 23, 2025',
         title: 'Trip to Belgrade',
         milestone: false,
         current: false
     },
     {
-        date: '2025-06-26',
+        date: '2025-06-26T12:00:00+02:00',
         dateDisplay: 'June 26, 2025',
         title: 'Start of Summer LDR',
         milestone: false,
         current: false
     },
     {
-        date: '2025-08-06',
+        date: '2025-08-06T12:00:00+02:00',
         dateDisplay: 'August 6, 2025',
         title: 'End of Summer LDR, Trip to Budapest (III)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-08-14',
+        date: '2025-08-14T12:00:00+02:00',
         dateDisplay: 'August 14, 2025',
         title: 'Trip to Poland!',
         milestone: false,
         current: false
     },
     {
-        date: '2025-08-16',
+        date: '2025-08-16T12:00:00+02:00',
         dateDisplay: 'August 16, 2025',
         title: 'Back from Poland',
         milestone: false,
         current: false
     },
     {
-        date: '2025-09-05',
+        date: '2025-09-05T12:00:00+02:00',
         dateDisplay: 'September 5, 2025',
         title: 'Ms. Muscari\'s 21st Birthday',
         milestone: true,
         current: false
     },
     {
-        date: '2025-09-06',
+        date: '2025-09-06T12:00:00+02:00',
         dateDisplay: 'September 6, 2025',
         title: 'Start of Turkey LDR (I)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-10-24',
+        date: '2025-10-24T12:00:00+02:00',
         dateDisplay: 'October 24, 2025',
         title: 'End of Turkey LDR (I), Trip to Stockholm',
         milestone: false,
         current: false
     },
     {
-        date: '2025-10-29',
+        date: '2025-10-29T12:00:00+02:00',
         dateDisplay: 'October 29, 2025',
         title: 'End of Stockholm, Start of Turkey LDR (II)',
         milestone: false,
         current: false
     },
     {
-        date: '2025-11-05',
+        date: '2025-11-14T12:00:00+01:00',
+        dateDisplay: 'November 14, 2025',
+        title: 'Arti Birthday',
+        milestone: true,
+        current: false
+    },
+    {
+        date: '2025-12-05T12:00:00+01:00',
+        dateDisplay: 'December 5, 2025',
+        title: 'End of Turkey LDR (II), Trip to Gothenburg',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2025-12-08T12:00:00+01:00',
+        dateDisplay: 'December 8, 2025',
+        title: 'End of Gothenburg, Start of Turkey LDR (III)',
+        milestone: false,
+        current: false
+    },
+    {
+        date: '2026-01-01T12:00:00+01:00',
+        dateDisplay: 'January 1, 2026',
+        title: 'New Year',
+        milestone: true,
+        current: false
+    },
+    {
+        date: '2025-11-05T12:00:00+01:00',
         dateDisplay: 'November 5, 2025',
         title: 'Right Now',
         milestone: false,
         current: true
-    }
-];
-
-// Duration Periods Data
-window.fateDurations = [
-    {
-        name: 'Jönköping I',
-        start: '2025-01-22',
-        end: '2025-04-01',
-        displayStart: 'Jan 22',
-        displayEnd: 'Apr 1',
-        ongoing: false
-    },
-    {
-        name: 'Budapest I',
-        start: '2025-04-01',
-        end: '2025-04-09',
-        displayStart: 'Apr 1',
-        displayEnd: 'Apr 9',
-        ongoing: false
-    },
-    {
-        name: 'Jönköping II',
-        start: '2025-04-09',
-        end: '2025-06-17',
-        displayStart: 'Apr 9',
-        displayEnd: 'Jun 17',
-        ongoing: false
-    },
-    {
-        name: 'Budapest II',
-        start: '2025-06-17',
-        end: '2025-06-26',
-        displayStart: 'Jun 17',
-        displayEnd: 'Jun 26',
-        ongoing: false
-    },
-    {
-        name: 'Serbia',
-        start: '2025-06-23',
-        end: '2025-06-25',
-        displayStart: 'Jun 23',
-        displayEnd: 'Jun 25',
-        ongoing: false
-    },
-    {
-        name: 'Summer Long Distance',
-        start: '2025-06-26',
-        end: '2025-08-06',
-        displayStart: 'Jun 26',
-        displayEnd: 'Aug 6',
-        ongoing: false
-    },
-    {
-        name: 'Budapest III',
-        start: '2025-08-06',
-        end: '2025-08-14',
-        displayStart: 'Aug 6',
-        displayEnd: 'Aug 14',
-        ongoing: false
-    },
-    {
-        name: 'Poland',
-        start: '2025-08-14',
-        end: '2025-08-16',
-        displayStart: 'Aug 14',
-        displayEnd: 'Aug 16',
-        ongoing: false
-    },
-    {
-        name: 'Jönköping III',
-        start: '2025-08-16',
-        end: '2025-09-06',
-        displayStart: 'Aug 16',
-        displayEnd: 'Sep 6',
-        ongoing: false
-    },
-    {
-        name: 'Turkey LDR I',
-        start: '2025-09-06',
-        end: '2025-10-24',
-        displayStart: 'Sep 6',
-        displayEnd: 'Oct 24',
-        ongoing: false
-    },
-    {
-        name: 'Stockholm',
-        start: '2025-10-24',
-        end: '2025-10-29',
-        displayStart: 'Oct 24',
-        displayEnd: 'Oct 29',
-        ongoing: false
-    },
-    {
-        name: 'Turkey LDR II',
-        start: '2025-10-29',
-        end: null,
-        displayStart: 'Oct 29',
-        displayEnd: 'Present',
-        ongoing: true
     }
 ];
