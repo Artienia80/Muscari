@@ -4,426 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="image.png" type="image/png">
+    <link rel="stylesheet" href="fate.css">
     <title>Clock of Fate - Life in 24 hours</title>
-    <style>
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #fff;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 1.2em;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 8px;
-            }
-
-            .subtitle {
-                font-size: 1em;
-                margin-bottom: 20px;
-            }
-        }
-
-        .clock-container {
-            background: rgba(30, 58, 138, 0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        @media (max-width: 768px) {
-            .clock-container {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-        }
-
-        .analog-clock {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-            position: relative;
-            border: 8px solid rgba(147, 51, 234, 0.6);
-            border-radius: 50%;
-            background: rgba(30, 58, 138, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .analog-clock {
-                width: 150px;
-                height: 150px;
-                margin: 0 auto 20px;
-                border: 6px solid rgba(147, 51, 234, 0.6);
-            }
-        }
-
-        .clock-center {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #fff;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
-
-        .hand {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform-origin: bottom center;
-            background: #fff;
-            border-radius: 10px;
-        }
-
-        .hour-hand {
-            width: 6px;
-            height: 50px;
-            margin-left: -3px;
-        }
-
-        .minute-hand {
-            width: 4px;
-            height: 70px;
-            margin-left: -2px;
-        }
-
-        .second-hand {
-            width: 2px;
-            height: 80px;
-            margin-left: -1px;
-            background: #a855f7;
-        }
-
-        .clock-number {
-            position: absolute;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .clock {
-            font-size: 3.5em;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.05em;
-        }
-
-        @media (max-width: 768px) {
-            .clock {
-                font-size: 1.5em;
-                letter-spacing: 0.02em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .clock {
-                font-size: 1.2em;
-            }
-        }
-
-        .milliseconds {
-            text-align: center;
-            font-size: 1.5em;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 20px;
-            color: #c77dff;
-            display: none;
-        }
-
-        .second-countdown {
-            text-align: center;
-            font-size: 1em;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .second-countdown {
-                font-size: 0.85em;
-                margin-bottom: 15px;
-            }
-        }
-
-        .clock-info {
-            text-align: center;
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        @media (max-width: 768px) {
-            .clock-info {
-                font-size: 0.9em;
-            }
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: rgba(30, 58, 138, 0.4);
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #7c3aed, #a855f7);
-            transition: width 0.1s linear;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .content-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 30px;
-        }
-
-        .timeline {
-            background: rgba(30, 58, 138, 0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        @media (max-width: 768px) {
-            .timeline {
-                padding: 20px;
-            }
-        }
-
-        .timeline-title {
-            font-size: 2em;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .timeline-title {
-                font-size: 1.5em;
-                margin-bottom: 20px;
-            }
-        }
-
-        .event {
-            position: relative;
-            padding: 20px 0 20px 60px;
-            border-left: 3px solid rgba(147, 51, 234, 0.4);
-            margin-left: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .event {
-                padding: 15px 0 15px 40px;
-                margin-left: 20px;
-            }
-        }
-
-        .event:last-child {
-            border-left: none;
-        }
-
-        .event-marker {
-            position: absolute;
-            left: -12px;
-            top: 20px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #fff;
-            border: 4px solid #7c3aed;
-        }
-
-        @media (max-width: 768px) {
-            .event-marker {
-                left: -10px;
-                top: 15px;
-                width: 16px;
-                height: 16px;
-                border: 3px solid #7c3aed;
-            }
-        }
-
-        .event-time {
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #e9d5ff;
-        }
-
-        @media (max-width: 768px) {
-            .event-time {
-                font-size: 1.1em;
-            }
-        }
-
-        .event-date {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .event-date {
-                font-size: 0.85em;
-            }
-        }
-
-        .event-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .event-title {
-                font-size: 1em;
-            }
-        }
-
-        .milestone {
-            background: rgba(124, 58, 237, 0.3);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border: 1px solid rgba(168, 85, 247, 0.4);
-        }
-
-        .current {
-            background: rgba(124, 58, 237, 0.4);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border: 2px solid #a855f7;
-        }
-
-        .durations {
-            background: rgba(30, 58, 138, 0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        @media (max-width: 768px) {
-            .durations {
-                padding: 20px;
-            }
-        }
-
-        .durations-title {
-            font-size: 1.8em;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .durations-title {
-                font-size: 1.5em;
-                margin-bottom: 20px;
-            }
-        }
-
-        .duration-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .duration-item {
-                padding: 15px;
-                margin-bottom: 12px;
-            }
-        }
-
-        .duration-name {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #ffd700;
-        }
-
-        @media (max-width: 768px) {
-            .duration-name {
-                font-size: 1.1em;
-            }
-        }
-
-        .duration-time {
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .duration-time {
-                font-size: 1em;
-            }
-        }
-
-        .duration-real {
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .duration-real {
-                font-size: 0.85em;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -451,251 +33,47 @@
 
         <div class="content-wrapper">
             <div class="timeline">
-                <h2 class="timeline-title">Our Relaationship</h2>
-                
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time">00:00:00</div>
-                    <div class="event-date">January 22, 2025</div>
-                    <div class="event-title">First Meeting</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventFeb1">00:00:00</div>
-                    <div class="event-date">February 1, 2025</div>
-                    <div class="event-title">Asking Out</div>
-                </div>
-
-                <div class="event milestone">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventFeb14">00:00:00</div>
-                    <div class="event-date">February 14, 2025</div>
-                    <div class="event-title">First Date</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventMar1">00:00:00</div>
-                    <div class="event-date">March 1, 2025</div>
-                    <div class="event-title">First Unseiso Experience</div>
-                </div>
-
-                <div class="event milestone">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventMar14">00:00:00</div>
-                    <div class="event-date">March 14, 2025</div>
-                    <div class="event-title">Official Relationship</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventMar22">00:00:00</div>
-                    <div class="event-date">March 22, 2025</div>
-                    <div class="event-title">Redo Day / Move In Together</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventApr1">00:00:00</div>
-                    <div class="event-date">April 1, 2025</div>
-                    <div class="event-title">Trip to Budapest (I)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventApr9">00:00:00</div>
-                    <div class="event-date">April 9, 2025</div>
-                    <div class="event-title">Back from Budapest (I)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventJun5">00:00:00</div>
-                    <div class="event-date">June 5, 2025</div>
-                    <div class="event-title">End of Fabriken Move-In </div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventJun17">00:00:00</div>
-                    <div class="event-date">June 17, 2025</div>
-                    <div class="event-title">Trip to Budapest (II)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventJun23">00:00:00</div>
-                    <div class="event-date">June 23, 2025</div>
-                    <div class="event-title">Trip to Belgrade</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventJun26">00:00:00</div>
-                    <div class="event-date">June 26, 2025</div>
-                    <div class="event-title">Start of Summer LDR</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventAug6">00:00:00</div>
-                    <div class="event-date">August 6, 2025</div>
-                    <div class="event-title">End of Summer LDR, Trip to Budapest (III)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventAug14">00:00:00</div>
-                    <div class="event-date">August 14, 2025</div>
-                    <div class="event-title">Trip to Poland!</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventAug16">00:00:00</div>
-                    <div class="event-date">August 16, 2025</div>
-                    <div class="event-title">Back from Poland</div>
-                </div>
-
-                <div class="event milestone">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventSep5">00:00:00</div>
-                    <div class="event-date">September 5, 2025</div>
-                    <div class="event-title">Ms. Muscari's 21st Birthday</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventSep6">00:00:00</div>
-                    <div class="event-date">September 6, 2025</div>
-                    <div class="event-title">Start of Turkey LDR (I)</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventOct24">00:00:00</div>
-                    <div class="event-date">October 24, 2025</div>
-                    <div class="event-title">End of Turkey LDR (I), Trip to Stockholm</div>
-                </div>
-
-                <div class="event">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="eventOct29">00:00:00</div>
-                    <div class="event-date">October 29, 2025</div>
-                    <div class="event-title">End of Stockholm, Start of Turkey LDR (II)</div>
-                </div>
-
-                <div class="event current">
-                    <div class="event-marker"></div>
-                    <div class="event-time" id="currentTime">00:00:24</div>
-                    <div class="event-date" id="currentDate">November 3, 2025</div>
-                    <div class="event-title">Right Now</div>
+                <h2 class="timeline-title">Our Relationship</h2>
+                <div id="eventsContainer">
+                    <!-- Events will be loaded here -->
                 </div>
             </div>
 
             <div class="durations">
                 <h2 class="durations-title">Event Durations</h2>
-                
-                <div class="duration-item">
-                    <div class="duration-name">Jönköping I</div>
-                    <div class="duration-time" id="jkpg1Duration">Loading...</div>
-                    <div class="duration-real" id="jkpg1Real">Jan 22 - Apr 1</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Budapest I</div>
-                    <div class="duration-time" id="bp1Duration">Loading...</div>
-                    <div class="duration-real" id="bp1Real">Apr 1 - Apr 9</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Jönköping II</div>
-                    <div class="duration-time" id="jkpg2Duration">Loading...</div>
-                    <div class="duration-real" id="jkpg2Real">Apr 9 - Jun 17</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Budapest II</div>
-                    <div class="duration-time" id="bp2Duration">Loading...</div>
-                    <div class="duration-real" id="bp2Real">Jun 17 - Jun 26</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Serbia</div>
-                    <div class="duration-time" id="serbiaDuration">Loading...</div>
-                    <div class="duration-real" id="serbiaReal">Jun 23 - Jun 25</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Summer Long Distance</div>
-                    <div class="duration-time" id="summerLDDuration">Loading...</div>
-                    <div class="duration-real" id="summerLDReal">Jun 26 - Aug 6</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Budapest III</div>
-                    <div class="duration-time" id="bp3Duration">Loading...</div>
-                    <div class="duration-real" id="bp3Real">Aug 6 - Aug 14</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Poland</div>
-                    <div class="duration-time" id="polandDuration">Loading...</div>
-                    <div class="duration-real" id="polandReal">Aug 14 - Aug 16</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Jönköping III</div>
-                    <div class="duration-time" id="jkpg3Duration">Loading...</div>
-                    <div class="duration-real" id="jkpg3Real">Aug 16 - Sep 6</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Turkey LDR I</div>
-                    <div class="duration-time" id="tld1Duration">Loading...</div>
-                    <div class="duration-real" id="tld1Real">Sep 6 - Oct 24</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Stockholm</div>
-                    <div class="duration-time" id="stockholmDuration">Loading...</div>
-                    <div class="duration-real" id="stockholmReal">Oct 24 - Oct 29</div>
-                </div>
-
-                <div class="duration-item">
-                    <div class="duration-name">Turkey LDR II</div>
-                    <div class="duration-time" id="tldDuration">Ongoing...</div>
-                    <div class="duration-real" id="tldReal">Oct 29 - Present</div>
+                <div id="durationsContainer">
+                    <!-- Durations will be loaded here -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const startDate = new Date(2025, 0, 22, 0, 0, 0); // Year, Month(0-indexed), Day, Hour, Min, Sec
-        const endDate = new Date('2085-01-22T00:00:00');
+        // Jan 22, 2025 at 17:30 Swedish time (UTC+1)
+        const startDate = new Date('2025-01-22T17:30:00+01:00');
+        // End date: 60 years later at the same Swedish time
+        const endDate = new Date('2085-01-22T17:30:00+01:00');
         const totalLifeMs = endDate - startDate;
         
         // Convert a date to fate time from start
         function dateToFateTime(dateStr) {
-    const parts = dateStr.split('-');
-    const date = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]), 12, 0, 0);
-    const elapsedMs = date - startDate;
-    const progressFraction = elapsedMs / totalLifeMs;
-    const totalSeconds = progressFraction * 24 * 60 * 60;
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    return String(hours).padStart(2, '0') + ':' +
-           String(minutes).padStart(2, '0') + ':' +
-           String(seconds).padStart(2, '0');
-}
+            const parts = dateStr.split('-');
+            const date = new Date(`${parts[0]}-${parts[1]}-${parts[2]}T12:00:00+01:00`);
+            const elapsedMs = date - startDate;
+            const progressFraction = elapsedMs / totalLifeMs;
+            const totalSeconds = progressFraction * 24 * 60 * 60;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return String(hours).padStart(2, '0') + ':' +
+                   String(minutes).padStart(2, '0') + ':' +
+                   String(seconds).padStart(2, '0');
+        }
         
         // Calculate real durations in days
         function daysBetween(date1Str, date2Str) {
-            const d1 = new Date(date1Str + 'T12:00:00');
-            const d2 = new Date(date2Str + 'T12:00:00');
+            const d1 = new Date(date1Str + 'T12:00:00+01:00');
+            const d2 = new Date(date2Str + 'T12:00:00+01:00');
             return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
         }
         
@@ -711,21 +89,6 @@
             }
             return `${seconds.toFixed(2)} seconds`;
         }
-        
-        // Pre-calculate all durations
-        const durations = {
-            jkpg1: { days: daysBetween('2025-01-22', '2025-04-01'), start: '2025-01-22', end: '2025-04-01' },
-            bp1: { days: daysBetween('2025-04-01', '2025-04-09'), start: '2025-04-01', end: '2025-04-09' },
-            jkpg2: { days: daysBetween('2025-04-09', '2025-06-17'), start: '2025-04-09', end: '2025-06-17' },
-            bp2: { days: daysBetween('2025-06-17', '2025-06-26'), start: '2025-06-17', end: '2025-06-26' },
-            serbia: { days: daysBetween('2025-06-23', '2025-06-25'), start: '2025-06-23', end: '2025-06-25' },
-            summerLD: { days: daysBetween('2025-06-26', '2025-08-06'), start: '2025-06-26', end: '2025-08-06' },
-            bp3: { days: daysBetween('2025-08-06', '2025-08-14'), start: '2025-08-06', end: '2025-08-14' },
-            poland: { days: daysBetween('2025-08-14', '2025-08-16'), start: '2025-08-14', end: '2025-08-16' },
-            jkpg3: { days: daysBetween('2025-08-16', '2025-09-06'), start: '2025-08-16', end: '2025-09-06' },
-            tld1: { days: daysBetween('2025-09-06', '2025-10-24'), start: '2025-09-06', end: '2025-10-24' },
-            stockholm: { days: daysBetween('2025-10-24', '2025-10-29'), start: '2025-10-24', end: '2025-10-29' }
-        };
 
         function updateClock() {
             const now = new Date();
@@ -744,7 +107,6 @@
                 String(seconds).padStart(2, '0') + '.' +
                 String(milliseconds).padStart(6, '0');
             
-            // Calculate time until next second (in microseconds for precision)
             const microsecondsInSecond = 1000000;
             const currentMicroseconds = parseInt(milliseconds);
             const microsUntilNextSecond = microsecondsInSecond - currentMicroseconds;
@@ -752,7 +114,6 @@
             document.getElementById('fateTime').textContent = timeString;
             document.getElementById('secondCountdown').textContent = 
                 `Time until one second: ${microsUntilNextSecond}µs`;
-            document.getElementById('currentTime').textContent = timeString;
             
             // Update analog clock
             const hourAngle = (hours % 24) * 15 + (minutes / 60) * 15;
@@ -764,11 +125,8 @@
             document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
             
             const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('realDate').textContent = 
                 'Real Time: ' + now.toLocaleDateString('en-US', options);
-            document.getElementById('currentDate').textContent = 
-                now.toLocaleDateString('en-US', dateOptions);
             
             const percentage = (progressFraction * 100).toFixed(8);
             document.getElementById('dayProgress').textContent = 
@@ -777,75 +135,84 @@
             document.getElementById('progressBar').style.width = percentage + '%';
             document.getElementById('progressBar').textContent = percentage.substring(0, 7) + '%';
 
-            // Update Turkey Long Distance II duration
-            const tldStart = new Date('2025-10-29T12:00:00');
-            const tldElapsed = now - tldStart;
-            const tldDays = Math.floor(tldElapsed / (1000 * 60 * 60 * 24));
-            
-            document.getElementById('tldDuration').textContent = daysToFateTime(tldDays);
-            document.getElementById('tldReal').textContent = 
-                `Oct 29 - Present (${tldDays} days)`;
+            // Update current event time
+            const currentTimeEl = document.getElementById('currentTime');
+            if (currentTimeEl) {
+                currentTimeEl.textContent = timeString.substring(0, 8);
+            }
+            const currentDateEl = document.getElementById('currentDate');
+            if (currentDateEl) {
+                const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                currentDateEl.textContent = now.toLocaleDateString('en-US', dateOptions);
+            }
         }
 
+        // Load events from fateevents.js
+        async function loadEvents() {
+            try {
+                const response = await fetch('fateevents.js');
+                const text = await response.text();
+                
+                // Execute the events script
+                eval(text);
+                
+                // Render events
+                const eventsContainer = document.getElementById('eventsContainer');
+                if (window.fateEvents && eventsContainer) {
+                    eventsContainer.innerHTML = window.fateEvents.map(event => {
+                        const fateTime = dateToFateTime(event.date);
+                        const classNames = event.milestone ? 'event milestone' : 
+                                         event.current ? 'event current' : 'event';
+                        
+                        return `
+                            <div class="${classNames}">
+                                <div class="event-marker"></div>
+                                <div class="event-time" ${event.current ? 'id="currentTime"' : ''}>${fateTime}</div>
+                                <div class="event-date" ${event.current ? 'id="currentDate"' : ''}>${event.dateDisplay}</div>
+                                <div class="event-title">${event.title}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
+                // Render durations
+                const durationsContainer = document.getElementById('durationsContainer');
+                if (window.fateDurations && durationsContainer) {
+                    durationsContainer.innerHTML = window.fateDurations.map(duration => {
+                        let durationText, realText;
+                        
+                        if (duration.ongoing) {
+                            // Calculate ongoing duration
+                            const now = new Date();
+                            const start = new Date(duration.start + 'T12:00:00+01:00');
+                            const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+                            durationText = daysToFateTime(days);
+                            realText = `${duration.displayStart} - Present (${days} days)`;
+                        } else {
+                            const days = daysBetween(duration.start, duration.end);
+                            durationText = daysToFateTime(days);
+                            realText = `${duration.displayStart} - ${duration.displayEnd} (${days} days)`;
+                        }
+                        
+                        return `
+                            <div class="duration-item">
+                                <div class="duration-name">${duration.name}</div>
+                                <div class="duration-time">${durationText}</div>
+                                <div class="duration-real">${realText}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        // Initialize
         updateClock();
-        setInterval(updateClock, 10); // Update every 10ms for smooth microseconds
-        
-        // Update duration displays on load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update all event times
-            document.getElementById('eventFeb1').textContent = dateToFateTime('2025-02-01');
-            document.getElementById('eventFeb14').textContent = dateToFateTime('2025-02-14');
-            document.getElementById('eventMar1').textContent = dateToFateTime('2025-03-01');
-            document.getElementById('eventMar14').textContent = dateToFateTime('2025-03-14');
-            document.getElementById('eventMar22').textContent = dateToFateTime('2025-03-22');
-            document.getElementById('eventApr1').textContent = dateToFateTime('2025-04-01');
-            document.getElementById('eventApr9').textContent = dateToFateTime('2025-04-09');
-            document.getElementById('eventJun5').textContent = dateToFateTime('2025-06-05');
-            document.getElementById('eventJun17').textContent = dateToFateTime('2025-06-17');
-            document.getElementById('eventJun23').textContent = dateToFateTime('2025-06-23');
-            document.getElementById('eventJun26').textContent = dateToFateTime('2025-06-26');
-            document.getElementById('eventAug6').textContent = dateToFateTime('2025-08-06');
-            document.getElementById('eventAug14').textContent = dateToFateTime('2025-08-14');
-            document.getElementById('eventAug16').textContent = dateToFateTime('2025-08-16');
-            document.getElementById('eventSep5').textContent = dateToFateTime('2025-09-05');
-            document.getElementById('eventSep6').textContent = dateToFateTime('2025-09-06');
-            document.getElementById('eventOct24').textContent = dateToFateTime('2025-10-24');
-            document.getElementById('eventOct29').textContent = dateToFateTime('2025-10-29');
-            
-            // Update durations
-            document.getElementById('jkpg1Duration').textContent = daysToFateTime(durations.jkpg1.days);
-            document.getElementById('jkpg1Real').textContent = `Jan 22 - Apr 1 (${durations.jkpg1.days} days)`;
-            
-            document.getElementById('bp1Duration').textContent = daysToFateTime(durations.bp1.days);
-            document.getElementById('bp1Real').textContent = `Apr 1 - Apr 9 (${durations.bp1.days} days)`;
-            
-            document.getElementById('jkpg2Duration').textContent = daysToFateTime(durations.jkpg2.days);
-            document.getElementById('jkpg2Real').textContent = `Apr 9 - Jun 17 (${durations.jkpg2.days} days)`;
-            
-            document.getElementById('bp2Duration').textContent = daysToFateTime(durations.bp2.days);
-            document.getElementById('bp2Real').textContent = `Jun 17 - Jun 26 (${durations.bp2.days} days)`;
-            
-            document.getElementById('serbiaReal').textContent = `Jun 23 - Jun 25 (${durations.serbia.days} days)`;
-            document.getElementById('serbiaDuration').textContent = daysToFateTime(durations.serbia.days);
-            
-            document.getElementById('summerLDDuration').textContent = daysToFateTime(durations.summerLD.days);
-            document.getElementById('summerLDReal').textContent = `Jun 26 - Aug 6 (${durations.summerLD.days} days)`;
-            
-            document.getElementById('bp3Duration').textContent = daysToFateTime(durations.bp3.days);
-            document.getElementById('bp3Real').textContent = `Aug 6 - Aug 14 (${durations.bp3.days} days)`;
-            
-            document.getElementById('polandDuration').textContent = daysToFateTime(durations.poland.days);
-            document.getElementById('polandReal').textContent = `Aug 14 - Aug 16 (${durations.poland.days} days)`;
-            
-            document.getElementById('jkpg3Duration').textContent = daysToFateTime(durations.jkpg3.days);
-            document.getElementById('jkpg3Real').textContent = `Aug 16 - Sep 6 (${durations.jkpg3.days} days)`;
-            
-            document.getElementById('tld1Duration').textContent = daysToFateTime(durations.tld1.days);
-            document.getElementById('tld1Real').textContent = `Sep 6 - Oct 24 (${durations.tld1.days} days)`;
-            
-            document.getElementById('stockholmDuration').textContent = daysToFateTime(durations.stockholm.days);
-            document.getElementById('stockholmReal').textContent = `Oct 24 - Oct 29 (${durations.stockholm.days} days)`;
-        });
+        setInterval(updateClock, 10);
+        loadEvents();
     </script>
 </body>
 </html>
