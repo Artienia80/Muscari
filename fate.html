@@ -6,6 +6,14 @@
     <link rel="icon" href="image.png" type="image/png">
     <link rel="stylesheet" href="fate.css">
     <title>Clock of Fate - Life in 24 hours</title>
+    <style>
+        /* Highlight milestones in light blue */
+        .event.milestone {
+            background: rgba(126, 203, 255, 0.2);
+            border-left: 4px solid #7ecbff;
+            box-shadow: 0 0 12px rgba(126, 203, 255, 0.5);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -34,135 +42,110 @@
         <div class="content-wrapper">
             <div class="timeline">
                 <h2 class="timeline-title">Our Relationship</h2>
-                <div id="eventsContainer">
-                    <!-- Events will be loaded here -->
-                </div>
+                <div id="eventsContainer"></div>
             </div>
 
             <div class="durations">
                 <h2 class="durations-title">Event Durations</h2>
-                <div id="durationsContainer">
-                    <!-- Durations will be loaded here -->
-                </div>
+                <div id="durationsContainer"></div>
             </div>
         </div>
     </div>
 
-<script>
-    // Jan 22, 2025 at 17:30 Swedish time (UTC+1)
-    const startDate = new Date('2025-01-22T17:30:00+01:00');
-    // End date: 60 years later at the same Swedish time
-    const endDate = new Date('2085-01-22T17:30:00+01:00');
-    const totalLifeMs = endDate - startDate;
+    <script>
+        // Start and end of life day (Swedish time)
+        const startDate = new Date('2025-01-22T17:30:00+01:00');
+        const endDate = new Date('2085-01-22T17:30:00+01:00');
+        const totalLifeMs = endDate - startDate;
 
-    // Convert ISO 8601 date to fate time from start
-    function dateToFateTime(dateStr) {
-        const date = new Date(dateStr); // can handle full ISO with timezone
-        const elapsedMs = date - startDate;
-
-        if (elapsedMs < 0) return "00:00:00"; // before start, safeguard
-
-        const progressFraction = elapsedMs / totalLifeMs;
-        const totalSeconds = progressFraction * 24 * 60 * 60;
-
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
-
-        return `${String(hours).padStart(2, '0')}:` +
-               `${String(minutes).padStart(2, '0')}:` +
-               `${String(seconds).padStart(2, '0')}`;
-    }
-
-    // Calculate real durations in days (supports full ISO strings)
-    function daysBetween(date1Str, date2Str) {
-        const d1 = new Date(date1Str);
-        const d2 = new Date(date2Str);
-        return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
-    }
-
-    // Convert real days to fate time string
-    function daysToFateTime(days) {
-        const fateSeconds = days * 2.955884544;
-        const minutes = Math.floor(fateSeconds / 60);
-        const seconds = fateSeconds % 60;
-
-        if (minutes > 0) {
-            const secStr = seconds < 10 ? seconds.toFixed(2) : Math.round(seconds).toString();
-            return `${minutes} minute${minutes !== 1 ? 's' : ''} ${secStr} second${Math.round(seconds) !== 1 ? 's' : ''}`;
+        // Convert date to fate time
+        function dateToFateTime(dateStr) {
+            const date = new Date(dateStr);
+            const elapsedMs = date - startDate;
+            const progressFraction = elapsedMs / totalLifeMs;
+            const totalSeconds = progressFraction * 24 * 60 * 60;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
-        return `${seconds.toFixed(2)} seconds`;
-    }
 
-    function updateClock() {
-        const now = new Date();
-        const elapsedMs = now - startDate;
-        const progressFraction = elapsedMs / totalLifeMs;
-
-        const totalSeconds = progressFraction * 24 * 60 * 60;
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
-        const microseconds = ((totalSeconds % 1) * 1000000).toFixed(0);
-
-        const timeString =
-            `${String(hours).padStart(2, '0')}:` +
-            `${String(minutes).padStart(2, '0')}:` +
-            `${String(seconds).padStart(2, '0')}.` +
-            `${String(microseconds).padStart(6, '0')}`;
-
-        const microsUntilNextSecond = 1000000 - parseInt(microseconds);
-
-        document.getElementById('fateTime').textContent = timeString;
-        document.getElementById('secondCountdown').textContent =
-            `Time until next second: ${microsUntilNextSecond}µs`;
-
-        // Analog clock
-        const hourAngle = (hours % 24) * 15 + (minutes / 60) * 15;
-        const minuteAngle = minutes * 6 + (seconds / 60) * 6;
-        const secondAngle = seconds * 6 + (parseInt(microseconds) / 1000000) * 6;
-
-        document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
-        document.getElementById('minuteHand').style.transform = `rotate(${minuteAngle}deg)`;
-        document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
-
-        const options = {
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit'
-        };
-        document.getElementById('realDate').textContent =
-            'Real Time: ' + now.toLocaleDateString('en-US', options);
-
-        const percentage = (progressFraction * 100).toFixed(8);
-        document.getElementById('dayProgress').textContent =
-            `${percentage}% of our lifetime day has passed`;
-
-        document.getElementById('progressBar').style.width = percentage + '%';
-        document.getElementById('progressBar').textContent = percentage.substring(0, 7) + '%';
-
-        // Update current event display
-        const currentTimeEl = document.getElementById('currentTime');
-        if (currentTimeEl) currentTimeEl.textContent = timeString.substring(0, 8);
-        const currentDateEl = document.getElementById('currentDate');
-        if (currentDateEl) {
-            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-            currentDateEl.textContent = now.toLocaleDateString('en-US', dateOptions);
+        function daysBetween(d1, d2) {
+            return Math.round((new Date(d2) - new Date(d1)) / (1000 * 60 * 60 * 24));
         }
-    }
 
-    async function loadEvents() {
-        try {
-            const response = await fetch('fateevents.js');
-            const text = await response.text();
-            eval(text); // loads window.fateEvents and window.fateDurations
+        function daysToFateTime(days) {
+            const fateSeconds = days * 2.955884544;
+            const minutes = Math.floor(fateSeconds / 60);
+            const seconds = fateSeconds % 60;
+            if (minutes > 0) {
+                return `${minutes}m ${seconds.toFixed(2)}s`;
+            }
+            return `${seconds.toFixed(2)}s`;
+        }
 
-            // Render events
-            const eventsContainer = document.getElementById('eventsContainer');
-            if (window.fateEvents && eventsContainer) {
+        function updateClock() {
+            const now = new Date();
+            const elapsedMs = now - startDate;
+            const progressFraction = elapsedMs / totalLifeMs;
+
+            const totalSeconds = progressFraction * 24 * 60 * 60;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            const microseconds = Math.floor((totalSeconds % 1) * 1_000_000);
+
+            const timeString = `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(microseconds).padStart(6,'0')}`;
+
+            document.getElementById('fateTime').textContent = timeString;
+            document.getElementById('secondCountdown').textContent = `Time until one second: ${1_000_000 - microseconds}µs`;
+
+            const hourAngle = (hours % 24) * 15 + (minutes / 60) * 15;
+            const minuteAngle = minutes * 6 + (seconds / 60) * 6;
+            const secondAngle = seconds * 6 + (microseconds / 1_000_000) * 6;
+
+            document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
+            document.getElementById('minuteHand').style.transform = `rotate(${minuteAngle}deg)`;
+            document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('realDate').textContent = 'Real Time: ' + now.toLocaleDateString('en-US', options);
+
+            const percentage = (progressFraction * 100).toFixed(8);
+            document.getElementById('dayProgress').textContent = `${percentage}% of our lifetime day has passed`;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage.substring(0, 7) + '%';
+        }
+
+        async function loadEvents() {
+            try {
+                const response = await fetch('fateevents.js');
+                const text = await response.text();
+                eval(text);
+
+                // --- Insert dynamic Right Now event ---
+                window.fateEvents = window.fateEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+                const nowSweden = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Stockholm" }));
+                window.fateEvents = window.fateEvents.filter(e => !e.current);
+
+                let insertIndex = window.fateEvents.findIndex(e => new Date(e.date) > nowSweden);
+                if (insertIndex === -1) insertIndex = window.fateEvents.length;
+
+                window.fateEvents.splice(insertIndex, 0, {
+                    title: "Right Now",
+                    dateDisplay: nowSweden.toLocaleDateString("en-GB", {
+                        day: "numeric", month: "long", year: "numeric"
+                    }),
+                    milestone: true,
+                    current: true
+                });
+
+                // --- Render events ---
+                const eventsContainer = document.getElementById('eventsContainer');
                 eventsContainer.innerHTML = window.fateEvents.map(event => {
-                    const fateTime = dateToFateTime(event.date);
+                    const fateTime = event.date ? dateToFateTime(event.date) : "—";
                     const classNames = event.milestone ? 'event milestone' :
-                                     event.current ? 'event current' : 'event';
+                        event.current ? 'event current' : 'event';
                     return `
                         <div class="${classNames}">
                             <div class="event-marker"></div>
@@ -172,17 +155,14 @@
                         </div>
                     `;
                 }).join('');
-            }
 
-            // Render durations
-            const durationsContainer = document.getElementById('durationsContainer');
-            if (window.fateDurations && durationsContainer) {
+                // --- Render durations ---
+                const durationsContainer = document.getElementById('durationsContainer');
                 durationsContainer.innerHTML = window.fateDurations.map(duration => {
                     let durationText, realText;
-
                     if (duration.ongoing) {
                         const now = new Date();
-                        const start = new Date(duration.start);
+                        const start = new Date(duration.start + 'T12:00:00+01:00');
                         const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
                         durationText = daysToFateTime(days);
                         realText = `${duration.displayStart} - Present (${days} days)`;
@@ -191,7 +171,6 @@
                         durationText = daysToFateTime(days);
                         realText = `${duration.displayStart} - ${duration.displayEnd} (${days} days)`;
                     }
-
                     return `
                         <div class="duration-item">
                             <div class="duration-name">${duration.name}</div>
@@ -200,17 +179,14 @@
                         </div>
                     `;
                 }).join('');
+            } catch (err) {
+                console.error('Error loading events:', err);
             }
-        } catch (error) {
-            console.error('Error loading events:', error);
         }
-    }
 
-    // Initialize
-    updateClock();
-    setInterval(updateClock, 10);
-    loadEvents();
-</script>
-
+        updateClock();
+        setInterval(updateClock, 10);
+        loadEvents();
+    </script>
 </body>
 </html>
